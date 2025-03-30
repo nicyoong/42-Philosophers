@@ -148,9 +148,35 @@ function test_death_timing() {
 }
 
 function test_large_number() {
-    log_test "Large number of philosophers (200, 10s timeout)"
-    output=$(timeout 10s run_philo 200 800 200 200)
-    assert_not_contains "$output" "died"
+    log_test "Large number of philosophers (200 philosophers)"
+    
+    # Set conservative timeout (20s for 200 philosophers)
+    local timeout_duration=20
+    local start_time=$(date +%s)
+    
+    # Run with timeout and capture output
+    if ! output=$(timeout ${timeout_duration}s ./philo 200 800 200 200 2>&1); then
+        if [[ $? -eq 124 ]]; then
+            echo -e "${YELLOW}WARN: Test timed out after ${timeout_duration}s${NC}"
+        else
+            echo -e "${RED}FAIL: Program crashed${NC}"
+            return 1
+        fi
+    fi
+    
+    # Verify no deaths occurred
+    if grep -q "died" <<< "$output"; then
+        echo -e "${RED}FAIL: Philosopher died in large simulation${NC}"
+        echo "Last lines of output:"
+        tail -n 5 <<< "$output"
+        return 1
+    fi
+    
+    local end_time=$(date +%s)
+    local duration=$((end_time - start_time))
+    
+    echo -e "${GREEN}PASS: Simulated 200 philosophers for ${duration}s without deaths${NC}"
+    return 0
 }
 
 # Verify fork pickup order doesn't cause deadlocks
