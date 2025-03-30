@@ -179,12 +179,40 @@ function test_large_number() {
     return 0
 }
 
-# Verify fork pickup order doesn't cause deadlocks
 function test_fork_order() {
-    log_test "Fork order deadlock check (50ms)"
-    # Should complete without deadlock
-    output=$(timeout 1s run_philo 4 50 20 20)
-    assert_not_contains "$output" "died"
+    log_test "Fork order deadlock check (4 philosophers)"
+    
+    # Run with short timeout and strict timing
+    local timeout_duration=2
+    local output
+    local exit_code=0
+    
+    output=$(timeout ${timeout_duration}s ./philo 4 50 20 20 2>&1) || exit_code=$?
+    
+    if [[ $exit_code -eq 124 ]]; then
+        echo -e "${RED}FAIL: Potential deadlock detected (test timed out)${NC}"
+        return 1
+    elif [[ $exit_code -ne 0 ]]; then
+        echo -e "${RED}FAIL: Program crashed with exit code $exit_code${NC}"
+        echo "Program output:"
+        echo "$output"
+        return 1
+    fi
+    
+    # Verify output contains expected activity
+    local ate_count=$(grep -c "is eating" <<< "$output")
+    if [[ $ate_count -lt 4 ]]; then
+        echo -e "${RED}FAIL: Insufficient eating activity ($ate_count meals)${NC}"
+        return 1
+    fi
+    
+    if grep -q "died" <<< "$output"; then
+        echo -e "${RED}FAIL: Philosopher died during deadlock test${NC}"
+        return 1
+    fi
+    
+    echo -e "${GREEN}PASS: No deadlocks detected with 4 philosophers${NC}"
+    return 0
 }
 
 function test_log_format() {
