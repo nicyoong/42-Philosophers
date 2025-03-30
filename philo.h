@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:30:52 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/30 23:33:20 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 00:26:41 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ typedef struct s_philosopher
 	pthread_mutex_t	meal_mutex;
 	unsigned long	last_meal_time;
 	int				meal_count;
-	int				time_to_die;
-	int				time_to_eat;
-	int				time_to_sleep;
+	unsigned long	time_to_die;
+	unsigned long	time_to_eat;
+	unsigned long	time_to_sleep;
 	int				required_meals;
 	pthread_mutex_t	*printf_mutex;
 	int				total_philosophers;
