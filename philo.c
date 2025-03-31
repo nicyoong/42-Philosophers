@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 18:31:52 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 18:32:57 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void *monitor(void *arg) {
 		if (required_meals != -1 && all_ate_enough) {
 			exit(0);
 		}
-		usleep(1000);
+		usleep(500);
 	}
 	return NULL;
 }
