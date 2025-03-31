@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 19:32:50 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 19:33:13 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,6 +194,24 @@ int	validate_arguments(int argc, char **argv)
 	{
 		printf("Usage: %s number_of_philosophers time_to_die ", argv[0]);
 		printf("time_to_eat time_to_sleep [required_meals]\n");
+		return (1);
+	}
+	return (0);
+}
+
+int	parse_arguments(t_simulation *sim, int argc, char **argv)
+{
+	sim->num_philos = atoi(argv[1]);
+	sim->time_to_die = atoi(argv[2]);
+	sim->time_to_eat = atoi(argv[3]);
+	sim->time_to_sleep = atoi(argv[4]);
+	sim->required_meals = (argc == 6) ? atoi(argv[5]) : -1;
+
+	if (sim->num_philos <= 0 || sim->time_to_die <= 0 
+		|| sim->time_to_eat <= 0 || sim->time_to_sleep <= 0 
+		|| (argc == 6 && sim->required_meals <= 0))
+	{
+		printf("Invalid arguments\n");
 		return (1);
 	}
 	return (0);
