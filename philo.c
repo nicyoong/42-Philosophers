@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 19:35:58 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 19:35:37 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -254,25 +254,6 @@ void	setup_philosophers(t_simulation *sim)
 		pthread_mutex_init(&sim->philos[i].meal_mutex, NULL);
 	}
 }
-
-int	start_simulation(t_simulation *sim)
-{
-	pthread_t	monitor_thread;
-
-	for (int i = 0; i < sim->num_philos; i++)
-	{
-		if (i % 2 == 0)
-			usleep(1000);
-		if (pthread_create(&sim->threads[i], NULL, 
-			philosopher_life, &sim->philos[i]) != 0)
-			return (1);
-	}
-	if (pthread_create(&monitor_thread, NULL, monitor, sim->philos) != 0)
-		return (1);
-	pthread_join(monitor_thread, NULL);
-	return (0);
-}
-
 
 // int main(int argc, char **argv) {
 //     if (argc < 5 || argc > 6) {
