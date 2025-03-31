@@ -166,21 +166,21 @@ bool	check_meal_completion(t_philosopher *philos, int num_philos, int required)
 	return (all_ate);
 }
 
-void *monitor(void *arg)
-{
-	t_philosopher *philos = (t_philosopher *)arg;
-	t_data *data = philos[0].data;
+void *monitor(void *arg) {
+    t_philosopher *philos = (t_philosopher *)arg;
+    t_data *data = philos[0].data; // Assuming 'data' is part of t_philosopher
 
-	while (1) {
-		if (death_condition || meals_completed) {
-			pthread_mutex_lock(&data->stop_mutex);
-			data->simulation_should_end = true;
-			pthread_mutex_unlock(&data->stop_mutex);
-			return NULL;
-		}
-		usleep(1000);
-	}
-	return NULL;
+    while (1) {
+        // Check for deaths or meal completion
+        if (death_condition || meals_completed) {
+            pthread_mutex_lock(&data->stop_mutex);
+            data->simulation_should_end = true;
+            pthread_mutex_unlock(&data->stop_mutex);
+            return NULL; // Exit monitor thread
+        }
+        usleep(1000);
+    }
+    return NULL;
 }
 
 //It still eats after fulfilling all conditions that philos must eat at least n times and then immediately stop
@@ -228,7 +228,6 @@ int	main(int argc, char **argv)
 		philosophers[i].required_meals = required_meals;
 		philosophers[i].printf_mutex = &printf_mutex;
 		philosophers[i].total_philosophers = num_philos;
-		philosophers[i].data = &control_data;
 	}
 	if (pthread_create(&monitor_thread, NULL, monitor, philosophers) != 0)
 		return (free(forks), free(philosophers), printf("Error: thread creation failed\n"), 1);
