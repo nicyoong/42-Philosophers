@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 19:34:36 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 19:35:17 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,6 +213,23 @@ int	parse_arguments(t_simulation *sim, int argc, char **argv)
 	{
 		printf("Invalid arguments\n");
 		return (1);
+	}
+	return (0);
+}
+
+int	initialize_resources(t_simulation *sim)
+{
+	sim->forks = malloc(sim->num_philos * sizeof(pthread_mutex_t));
+	sim->philos = malloc(sim->num_philos * sizeof(t_philosopher));
+	
+	if (!sim->forks || !sim->philos)
+		return (1);
+	
+	pthread_mutex_init(&sim->printf_mutex, NULL);
+	for (int i = 0; i < sim->num_philos; i++)
+	{
+		if (pthread_mutex_init(&sim->forks[i], NULL) != 0)
+			return (1);
 	}
 	return (0);
 }
