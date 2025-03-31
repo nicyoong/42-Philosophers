@@ -117,8 +117,8 @@ void	*philosopher_life(void *arg)
 		take_forks(philo);
 		update_last_meal(philo);
 		eat(philo);
-		release_forks(philo);
 		update_meal_count(philo);
+		release_forks(philo);
 		philo_sleep(philo);
 	}
 	return (NULL);
