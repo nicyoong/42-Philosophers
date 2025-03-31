@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:30:52 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 19:34:01 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 19:19:22 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,4 @@ typedef struct s_philosopher
 	int				total_philosophers;
 }	t_philosopher;
 
-typedef struct s_simulation {
-	int				num_philos;
-	unsigned long	time_to_die;
-	unsigned long	time_to_eat;
-	unsigned long	time_to_sleep;
-	unsigned long	required_meals;
-	pthread_mutex_t	*forks;
-	pthread_mutex_t	printf_mutex;
-	t_philosopher	*philos;
-	pthread_t		*threads;
-}	t_simulation;
 #endif
