@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 19:11:30 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 19:12:27 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	update_last_meal(t_philosopher *philo)
 void	eat(t_philosopher *philo)
 {
 	print_message(philo, "is eating");
-	precise_usleep(philo->time_to_eat * 1000);
+	usleep(philo->time_to_eat * 1000);
 }
 
 void	release_forks(t_philosopher *philo)
@@ -78,7 +78,7 @@ void	update_meal_count(t_philosopher *philo)
 void	philo_sleep(t_philosopher *philo)
 {
 	print_message(philo, "is sleeping");
-	precise_usleep(philo->time_to_sleep * 1000);
+	usleep(philo->time_to_sleep * 1000);
 }
 
 void	*philosopher_life(void *arg)
