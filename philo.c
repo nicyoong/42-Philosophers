@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 19:12:27 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 19:14:08 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,50 +98,6 @@ void	*philosopher_life(void *arg)
 	}
 	return (NULL);
 }
-
-// void *philosopher_life(void *arg) {
-// 	t_philosopher	*philo = (t_philosopher *)arg;
-
-// 	while (1) {
-// 		// Thinking phase
-// 		print_message(philo, "is thinking");
-		
-// 		// Fork acquisition with staggered start
-// 		if (philo->id % 2 == 0) {
-// 			pthread_mutex_lock(philo->left_fork);
-// 			print_message(philo, "has taken a fork");
-// 			pthread_mutex_lock(philo->right_fork);
-// 			print_message(philo, "has taken a fork");
-// 		} else {
-// 			pthread_mutex_lock(philo->right_fork);
-// 			print_message(philo, "has taken a fork");
-// 			pthread_mutex_lock(philo->left_fork);
-// 			print_message(philo, "has taken a fork");
-// 		}
-		
-// 		// Eating phase
-// 		pthread_mutex_lock(&philo->meal_mutex);
-// 		philo->last_meal_time = get_current_time();
-// 		pthread_mutex_unlock(&philo->meal_mutex);
-		
-// 		print_message(philo, "is eating");
-// 		usleep(philo->time_to_eat * 1000);
-		
-// 		// Fork release
-// 		pthread_mutex_unlock(philo->left_fork);
-// 		pthread_mutex_unlock(philo->right_fork);
-		
-// 		// Meal count update
-// 		pthread_mutex_lock(&philo->meal_mutex);
-// 		philo->meal_count++;
-// 		pthread_mutex_unlock(&philo->meal_mutex);
-		
-// 		// Sleeping phase
-// 		print_message(philo, "is sleeping");
-// 		usleep(philo->time_to_sleep * 1000);
-// 	}
-// 	return NULL;
-// }
 
 void *monitor(void *arg) {
 	t_philosopher *philosophers = (t_philosopher *)arg;
