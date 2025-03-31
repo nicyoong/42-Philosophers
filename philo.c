@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 19:29:32 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 19:32:50 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,55 +188,67 @@ void		*monitor(void *arg)
 	return (NULL);
 }
 
-int main(int argc, char **argv) {
-    if (argc < 5 || argc > 6) {
-        printf("Usage: %s number_of_philosophers time_to_die time_to_eat time_to_sleep [required_meals]\n", argv[0]);
-        return 1;
-    }
-    int num_philos = atoi(argv[1]);
-    int time_to_die = atoi(argv[2]);
-    int time_to_eat = atoi(argv[3]);
-    int time_to_sleep = atoi(argv[4]);
-    int required_meals = argc == 6 ? atoi(argv[5]) : -1;
-    if (num_philos <= 0 || time_to_die <= 0 || time_to_eat <= 0 || time_to_sleep <= 0 || (argc == 6 && required_meals <= 0)) {
-        printf("Invalid arguments\n");
-        return 1;
-    }
-    pthread_mutex_t *forks = malloc(num_philos * sizeof(pthread_mutex_t));
-    for (int i = 0; i < num_philos; i++) {
-        pthread_mutex_init(&forks[i], NULL);
-    }
-    pthread_mutex_t printf_mutex;
-    pthread_mutex_init(&printf_mutex, NULL);
-    t_philosopher *philosophers = malloc(num_philos * sizeof(t_philosopher));
-    for (int i = 0; i < num_philos; i++) {
-        philosophers[i].id = i + 1;
-        philosophers[i].left_fork = &forks[i];
-        philosophers[i].right_fork = &forks[(i + 1) % num_philos];
-        pthread_mutex_init(&philosophers[i].meal_mutex, NULL);
-        philosophers[i].last_meal_time = get_current_time();
-        philosophers[i].meal_count = 0;
-        philosophers[i].time_to_die = time_to_die;
-        philosophers[i].time_to_eat = time_to_eat;
-        philosophers[i].time_to_sleep = time_to_sleep;
-        philosophers[i].required_meals = required_meals;
-        philosophers[i].printf_mutex = &printf_mutex;
-        philosophers[i].total_philosophers = num_philos;
-    }
-    pthread_t threads[num_philos];
-    for (int i = 0; i < num_philos; i++) {
-		if (i % 2 == 0) usleep(1000);
-        pthread_create(&threads[i], NULL, philosopher_life, &philosophers[i]);
-    }
-    pthread_t monitor_thread;
-    pthread_create(&monitor_thread, NULL, monitor, philosophers);
-    pthread_join(monitor_thread, NULL);
-    for (int i = 0; i < num_philos; i++) {
-        pthread_mutex_destroy(&forks[i]);
-        pthread_mutex_destroy(&philosophers[i].meal_mutex);
-    }
-    pthread_mutex_destroy(&printf_mutex);
-    free(forks);
-    free(philosophers);
-    return 0;
+int	validate_arguments(int argc, char **argv)
+{
+	if (argc < 5 || argc > 6)
+	{
+		printf("Usage: %s number_of_philosophers time_to_die ", argv[0]);
+		printf("time_to_eat time_to_sleep [required_meals]\n");
+		return (1);
+	}
+	return (0);
 }
+
+
+// int main(int argc, char **argv) {
+//     if (argc < 5 || argc > 6) {
+//         printf("Usage: %s number_of_philosophers time_to_die time_to_eat time_to_sleep [required_meals]\n", argv[0]);
+//         return 1;
+//     }
+//     int num_philos = atoi(argv[1]);
+//     int time_to_die = atoi(argv[2]);
+//     int time_to_eat = atoi(argv[3]);
+//     int time_to_sleep = atoi(argv[4]);
+//     int required_meals = argc == 6 ? atoi(argv[5]) : -1;
+//     if (num_philos <= 0 || time_to_die <= 0 || time_to_eat <= 0 || time_to_sleep <= 0 || (argc == 6 && required_meals <= 0)) {
+//         printf("Invalid arguments\n");
+//         return 1;
+//     }
+//     pthread_mutex_t *forks = malloc(num_philos * sizeof(pthread_mutex_t));
+//     for (int i = 0; i < num_philos; i++) {
+//         pthread_mutex_init(&forks[i], NULL);
+//     }
+//     pthread_mutex_t printf_mutex;
+//     pthread_mutex_init(&printf_mutex, NULL);
+//     t_philosopher *philosophers = malloc(num_philos * sizeof(t_philosopher));
+//     for (int i = 0; i < num_philos; i++) {
+//         philosophers[i].id = i + 1;
+//         philosophers[i].left_fork = &forks[i];
+//         philosophers[i].right_fork = &forks[(i + 1) % num_philos];
+//         pthread_mutex_init(&philosophers[i].meal_mutex, NULL);
+//         philosophers[i].last_meal_time = get_current_time();
+//         philosophers[i].meal_count = 0;
+//         philosophers[i].time_to_die = time_to_die;
+//         philosophers[i].time_to_eat = time_to_eat;
+//         philosophers[i].time_to_sleep = time_to_sleep;
+//         philosophers[i].required_meals = required_meals;
+//         philosophers[i].printf_mutex = &printf_mutex;
+//         philosophers[i].total_philosophers = num_philos;
+//     }
+//     pthread_t threads[num_philos];
+//     for (int i = 0; i < num_philos; i++) {
+// 		if (i % 2 == 0) usleep(1000);
+//         pthread_create(&threads[i], NULL, philosopher_life, &philosophers[i]);
+//     }
+//     pthread_t monitor_thread;
+//     pthread_create(&monitor_thread, NULL, monitor, philosophers);
+//     pthread_join(monitor_thread, NULL);
+//     for (int i = 0; i < num_philos; i++) {
+//         pthread_mutex_destroy(&forks[i]);
+//         pthread_mutex_destroy(&philosophers[i].meal_mutex);
+//     }
+//     pthread_mutex_destroy(&printf_mutex);
+//     free(forks);
+//     free(philosophers);
+//     return 0;
+// }
