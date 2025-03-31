@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 00:47:31 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 18:31:13 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,13 @@ unsigned long get_current_time() {
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
+}
+
+void precise_usleep(unsigned long microseconds) {
+	unsigned long start = get_current_time();
+	while (get_current_time() - start < microseconds) {
+		usleep(microseconds / 10);
+	}
 }
 
 void print_message(t_philosopher *philo, const char *msg) {
@@ -50,7 +57,7 @@ void *philosopher_life(void *arg) {
 		pthread_mutex_unlock(&philo->meal_mutex);
 		
 		print_message(philo, "is eating");
-		usleep(philo->time_to_eat * 1000);
+		precise_usleep(philo->time_to_eat * 1000);
 		
 		// Fork release
 		pthread_mutex_unlock(philo->left_fork);
@@ -63,7 +70,7 @@ void *philosopher_life(void *arg) {
 		
 		// Sleeping phase
 		print_message(philo, "is sleeping");
-		usleep(philo->time_to_sleep * 1000);
+		precise_usleep(philo->time_to_sleep * 1000);
 	}
 	return NULL;
 }
@@ -134,7 +141,7 @@ int main(int argc, char **argv) {
     }
     pthread_t threads[num_philos];
     for (int i = 0; i < num_philos; i++) {
-		if (i % 2 == 0) usleep(1000);
+		if (i % 2 == 0) usleep(100);
         pthread_create(&threads[i], NULL, philosopher_life, &philosophers[i]);
     }
     pthread_t monitor_thread;
