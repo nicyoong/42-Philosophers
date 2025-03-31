@@ -146,19 +146,18 @@ bool	check_meal_completion(t_philosopher *philos, int num_philos, int required)
 {
 	int		i;
 	bool	all_ate;
-	
+
 	all_ate = true;
-	i = -1;
-	while (++i < num_philos)
+	i = 0;
+	while (i < num_philos)
 	{
 		pthread_mutex_lock(&philos[i].meal_mutex);
 		if (philos[i].meal_count < required)
 			all_ate = false;
 		pthread_mutex_unlock(&philos[i].meal_mutex);
-		if (!all_ate)
-			break ;
+		i++;
 	}
-	return all_ate;
+	return (all_ate);
 }
 
 void		*monitor(void *arg)
