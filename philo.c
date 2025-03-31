@@ -166,21 +166,31 @@ bool	check_meal_completion(t_philosopher *philos, int num_philos, int required)
 	return (all_ate);
 }
 
-void *monitor(void *arg) {
-    t_philosopher *philos = (t_philosopher *)arg;
-    t_data *data = philos[0].data; // Assuming 'data' is part of t_philosopher
+void		*monitor(void *arg)
+{
+	t_philosopher	*philos;
+	int				num_philos;
+	int				req_meals;
+	unsigned long	current_time;
+	int				i;
 
-    while (1) {
-        // Check for deaths or meal completion
-        if (death_condition || meals_completed) {
-            pthread_mutex_lock(&data->stop_mutex);
-            data->simulation_should_end = true;
-            pthread_mutex_unlock(&data->stop_mutex);
-            return NULL; // Exit monitor thread
-        }
-        usleep(1000);
-    }
-    return NULL;
+	philos = (t_philosopher *)arg;
+	num_philos = philos[0].total_philosophers;
+	req_meals = philos[0].required_meals;
+	while (true)
+	{
+		current_time = get_current_time();
+		i = -1;
+		while (++i < num_philos)
+		{
+			if (check_philosopher_status(&philos[i], current_time))
+				handle_philosopher_death(&philos[i]);
+		}
+		if (req_meals != -1 && check_meal_completion(philos, num_philos, req_meals))
+			exit(EXIT_SUCCESS);
+		usleep(1000);
+	}
+	return (NULL);
 }
 
 //It still eats after fulfilling all conditions that philos must eat at least n times and then immediately stop
