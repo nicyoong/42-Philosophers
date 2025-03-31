@@ -113,12 +113,6 @@ void	*philosopher_life(void *arg)
 	philo = (t_philosopher *)arg;
 	while (1)
 	{
-		pthread_mutex_lock(&philo->data->stop_mutex);
-		if (philo->data->simulation_should_end) {
-			pthread_mutex_unlock(&philo->data->stop_mutex);
-			break;
-		}
-		pthread_mutex_unlock(&philo->data->stop_mutex);
 		think(philo);
 		take_forks(philo);
 		update_last_meal(philo);
@@ -204,10 +198,7 @@ int	main(int argc, char **argv)
 	pthread_t		*threads;
 	pthread_t		monitor_thread;
 	int				i;
-	t_data			control_data;
 
-	pthread_mutex_init(&control_data.stop_mutex, NULL);
-	control_data.simulation_should_end = false;
 	if (argc < 5 || argc > 6)
 		return (printf("Error: wrong number of arguments\n"), 1);
 	num_philos = ft_atoi(argv[1]);
