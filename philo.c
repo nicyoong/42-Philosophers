@@ -172,7 +172,17 @@ void *monitor(void *arg)
 	t_data *data = philos[0].data;
 
 	while (1) {
-		if (death_condition || meals_completed) {
+		unsigned long current_time = get_current_time();
+		for (int i = 0; i < philos[0].total_philosophers; i++) {
+			if (check_philosopher_status(&philos[i], current_time)) {
+				pthread_mutex_lock(&data->stop_mutex);
+				data->simulation_should_end = true;
+				pthread_mutex_unlock(&data->stop_mutex);
+				handle_philosopher_death(&philos[i]);
+				return NULL;
+			}
+		}
+		if (req_meals != -1 && check_meal_completion(philos, num_philos, req_meals)) {
 			pthread_mutex_lock(&data->stop_mutex);
 			data->simulation_should_end = true;
 			pthread_mutex_unlock(&data->stop_mutex);
