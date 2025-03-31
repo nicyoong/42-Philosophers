@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 20:02:08 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 20:14:14 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,6 +224,9 @@ int main(int argc, char **argv) {
         philosophers[i].total_philosophers = num_philos;
     }
     pthread_t threads[num_philos];
+	pthread_t monitor_thread;
+	pthread_create(&monitor_thread, NULL, monitor, philosophers);
+    pthread_detach(monitor_thread);
     for (int i = 0; i < num_philos; i++) {
 		if (i % 2 == 0) usleep(1000);
         pthread_create(&threads[i], NULL, philosopher_life, &philosophers[i]);
@@ -231,9 +234,6 @@ int main(int argc, char **argv) {
 	for (int i = 0; i < num_philos; i++) {
 		pthread_join(threads[i], NULL);
 	}
-    pthread_t monitor_thread;
-    pthread_create(&monitor_thread, NULL, monitor, philosophers);
-    pthread_join(monitor_thread, NULL);
     for (int i = 0; i < num_philos; i++) {
         pthread_mutex_destroy(&forks[i]);
         pthread_mutex_destroy(&philosophers[i].meal_mutex);
