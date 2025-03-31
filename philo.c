@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 19:17:04 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 19:18:33 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,17 @@ void	handle_philosopher_death(t_philosopher *philo)
 	pthread_mutex_lock(philo->printf_mutex);
 	printf("%lu %d died\n", get_current_time(), philo->id);
 	exit(EXIT_SUCCESS);
+}
+
+int	check_philosopher_status(t_philosopher *philo, unsigned long current_time)
+{
+	int	starving;
+	
+	pthread_mutex_lock(&philo->meal_mutex);
+	starving = (current_time - philo->last_meal_time) >= philo->time_to_die;
+	pthread_mutex_unlock(&philo->meal_mutex);
+	
+	return (starving);
 }
 
 
