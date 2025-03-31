@@ -34,6 +34,7 @@ typedef struct s_philosopher
 	int				required_meals;
 	pthread_mutex_t	*printf_mutex;
 	int				total_philosophers;
+	t_data			*data;
 }	t_philosopher;
 
 typedef struct s_data {
