@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 19:36:35 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 19:36:18 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,27 +285,6 @@ void	cleanup_resources(t_simulation *sim)
 	free(sim->philos);
 }
 
-int	main(int argc, char **argv)
-{
-	t_simulation	sim;
-
-	if (validate_arguments(argc, argv) || parse_arguments(&sim, argc, argv))
-		return (1);
-	if (initialize_resources(&sim))
-	{
-		printf("Error initializing resources\n");
-		return (1);
-	}
-	setup_philosophers(&sim);
-	if (start_simulation(&sim))
-	{
-		cleanup_resources(&sim);
-		printf("Error starting simulation\n");
-		return (1);
-	}
-	cleanup_resources(&sim);
-	return (0);
-}
 
 // int main(int argc, char **argv) {
 //     if (argc < 5 || argc > 6) {
