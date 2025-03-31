@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 19:10:51 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 19:11:12 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,12 @@ void	update_meal_count(t_philosopher *philo)
 	pthread_mutex_lock(&philo->meal_mutex);
 	philo->meal_count++;
 	pthread_mutex_unlock(&philo->meal_mutex);
+}
+
+void	philo_sleep(t_philosopher *philo)
+{
+	print_message(philo, "is sleeping");
+	precise_usleep(philo->time_to_sleep * 1000);
 }
 
 // void *philosopher_life(void *arg) {
