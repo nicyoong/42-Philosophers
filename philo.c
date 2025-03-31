@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 19:29:32 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 20:02:08 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,6 +228,9 @@ int main(int argc, char **argv) {
 		if (i % 2 == 0) usleep(1000);
         pthread_create(&threads[i], NULL, philosopher_life, &philosophers[i]);
     }
+	for (int i = 0; i < num_philos; i++) {
+		pthread_join(threads[i], NULL);
+	}
     pthread_t monitor_thread;
     pthread_create(&monitor_thread, NULL, monitor, philosophers);
     pthread_join(monitor_thread, NULL);
