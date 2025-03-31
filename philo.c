@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 18:31:52 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 18:31:13 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,8 @@ void *philosopher_life(void *arg) {
 		precise_usleep(philo->time_to_eat * 1000);
 		
 		// Fork release
-		pthread_mutex_unlock(philo->right_fork);
 		pthread_mutex_unlock(philo->left_fork);
+		pthread_mutex_unlock(philo->right_fork);
 		
 		// Meal count update
 		pthread_mutex_lock(&philo->meal_mutex);
