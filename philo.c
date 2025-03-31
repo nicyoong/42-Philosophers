@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 19:06:55 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 19:07:38 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,13 @@ void	take_forks(t_philosopher *philo)
 		pthread_mutex_lock(philo->left_fork);
 		print_message(philo, "has taken a fork");
 	}
+}
+
+void	update_last_meal(t_philosopher *philo)
+{
+	pthread_mutex_lock(&philo->meal_mutex);
+	philo->last_meal_time = get_current_time();
+	pthread_mutex_unlock(&philo->meal_mutex);
 }
 
 
