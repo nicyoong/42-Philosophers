@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 19:35:17 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 19:35:37 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,6 +234,26 @@ int	initialize_resources(t_simulation *sim)
 	return (0);
 }
 
+void	setup_philosophers(t_simulation *sim)
+{
+	for (int i = 0; i < sim->num_philos; i++)
+	{
+		sim->philos[i] = (t_philosopher){
+			.id = i + 1,
+			.left_fork = &sim->forks[i],
+			.right_fork = &sim->forks[(i + 1) % sim->num_philos],
+			.last_meal_time = get_current_time(),
+			.meal_count = 0,
+			.time_to_die = sim->time_to_die,
+			.time_to_eat = sim->time_to_eat,
+			.time_to_sleep = sim->time_to_sleep,
+			.required_meals = sim->required_meals,
+			.printf_mutex = &sim->printf_mutex,
+			.total_philosophers = sim->num_philos
+		};
+		pthread_mutex_init(&sim->philos[i].meal_mutex, NULL);
+	}
+}
 
 // int main(int argc, char **argv) {
 //     if (argc < 5 || argc > 6) {
