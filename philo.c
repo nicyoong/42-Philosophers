@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 20:43:42 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 20:38:41 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,20 +106,12 @@ void	philo_sleep(t_philosopher *philo)
 	usleep(philo->time_to_sleep * 1000);
 }
 
-bool should_simulation_end(t_philosopher *philo) {
-	bool should_end;
-	pthread_mutex_lock(&philo->sim_end_mutex);
-	should_end = philo->simulation_should_end;
-	pthread_mutex_unlock(&philo->sim_end_mutex);
-	return should_end;
-}
-
 void	*philosopher_life(void *arg)
 {
 	t_philosopher	*philo;
 
 	philo = (t_philosopher *)arg;
-	while (!should_simulation_end(philo))
+	while (1)
 	{
 		think(philo);
 		take_forks(philo);
@@ -144,6 +136,15 @@ void handle_philosopher_death(t_philosopher *philo) {
 		pthread_mutex_unlock(&philo[i].sim_end_mutex);
 	}
 }
+
+bool should_simulation_end(t_philosopher *philo) {
+	bool should_end;
+	pthread_mutex_lock(&philo->sim_end_mutex);
+	should_end = philo->simulation_should_end;
+	pthread_mutex_unlock(&philo->sim_end_mutex);
+	return should_end;
+}
+
 
 bool	check_philosopher_status(t_philosopher *philo, unsigned long current_time)
 {
@@ -175,34 +176,31 @@ bool	check_meal_completion(t_philosopher *philos, int num_philos, int required)
 	return all_ate;
 }
 
-void *monitor(void *arg) {
-	t_philosopher *philos = (t_philosopher *)arg;
-	int num_philos = philos[0].total_philosophers;
-	int req_meals = philos[0].required_meals;
+void		*monitor(void *arg)
+{
+	t_philosopher	*philos;
+	int				num_philos;
+	int				req_meals;
+	unsigned long	current_time;
+	int				i;
 
-	while (true) {
-		// Check for deaths
-		unsigned long current_time = get_current_time();
-		for (int i = 0; i < num_philos; i++) {
-			if (check_philosopher_status(&philos[i], current_time)) {
-				handle_philosopher_death(philos);
-				return NULL; // Exit monitor thread
-			}
+	philos = (t_philosopher *)arg;
+	num_philos = philos[0].total_philosophers;
+	req_meals = philos[0].required_meals;
+	while (true)
+	{
+		current_time = get_current_time();
+		i = -1;
+		while (++i < num_philos)
+		{
+			if (check_philosopher_status(&philos[i], current_time))
+				handle_philosopher_death(&philos[i]);
 		}
-
-		// Check if all have eaten enough
-		if (req_meals != -1 && check_meal_completion(philos, num_philos, req_meals)) {
-			for (int i = 0; i < num_philos; i++) {
-				pthread_mutex_lock(&philos[i].sim_end_mutex);
-				philos[i].simulation_should_end = true;
-				pthread_mutex_unlock(&philos[i].sim_end_mutex);
-			}
-			return NULL; // Exit monitor thread
-		}
-
-		usleep(1000); // Avoid busy-waiting
+		if (req_meals != -1 && check_meal_completion(philos, num_philos, req_meals))
+			exit(EXIT_SUCCESS);
+		usleep(1000);
 	}
-	return NULL;
+	return (NULL);
 }
 
 int main(int argc, char **argv) {
@@ -239,8 +237,6 @@ int main(int argc, char **argv) {
         philosophers[i].required_meals = required_meals;
         philosophers[i].printf_mutex = &printf_mutex;
         philosophers[i].total_philosophers = num_philos;
-		philosophers[i].simulation_should_end = false;
-        pthread_mutex_init(&philosophers[i].sim_end_mutex, NULL);
     }
     pthread_t threads[num_philos];
 	pthread_t monitor_thread;
@@ -256,7 +252,6 @@ int main(int argc, char **argv) {
     for (int i = 0; i < num_philos; i++) {
         pthread_mutex_destroy(&forks[i]);
         pthread_mutex_destroy(&philosophers[i].meal_mutex);
-		pthread_mutex_destroy(&philosophers[i].sim_end_mutex);
     }
     pthread_mutex_destroy(&printf_mutex);
     free(forks);
