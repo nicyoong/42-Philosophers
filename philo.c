@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 20:38:26 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 20:14:14 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,17 +124,11 @@ void	*philosopher_life(void *arg)
 	return (NULL);
 }
 
-void handle_philosopher_death(t_philosopher *philo) {
+void	handle_philosopher_death(t_philosopher *philo)
+{
 	pthread_mutex_lock(philo->printf_mutex);
 	printf("%lu %d died\n", get_current_time(), philo->id);
-	pthread_mutex_unlock(philo->printf_mutex);
-
-	// Signal all threads to stop
-	for (int i = 0; i < philo->total_philosophers; i++) {
-		pthread_mutex_lock(&philo[i].sim_end_mutex);
-		philo[i].simulation_should_end = true;
-		pthread_mutex_unlock(&philo[i].sim_end_mutex);
-	}
+	exit(EXIT_SUCCESS);
 }
 
 bool	check_philosopher_status(t_philosopher *philo, unsigned long current_time)
