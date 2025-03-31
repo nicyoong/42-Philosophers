@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 19:35:58 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 19:36:18 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -271,6 +271,18 @@ int	start_simulation(t_simulation *sim)
 		return (1);
 	pthread_join(monitor_thread, NULL);
 	return (0);
+}
+
+void	cleanup_resources(t_simulation *sim)
+{
+	for (int i = 0; i < sim->num_philos; i++)
+	{
+		pthread_mutex_destroy(&sim->forks[i]);
+		pthread_mutex_destroy(&sim->philos[i].meal_mutex);
+	}
+	pthread_mutex_destroy(&sim->printf_mutex);
+	free(sim->forks);
+	free(sim->philos);
 }
 
 
