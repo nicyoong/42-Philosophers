@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 19:14:08 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 19:17:04 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,34 +99,42 @@ void	*philosopher_life(void *arg)
 	return (NULL);
 }
 
-void *monitor(void *arg) {
-	t_philosopher *philosophers = (t_philosopher *)arg;
-	int required_meals = philosophers[0].required_meals;
-	int num_philos = philosophers[0].total_philosophers;
-	while (1) {
-		unsigned long current_time = get_current_time();
-		int all_ate_enough = 1;
-		for (int i = 0; i < num_philos; i++) {
-			pthread_mutex_lock(&philosophers[i].meal_mutex);
-			unsigned long last_meal = philosophers[i].last_meal_time;
-			int meals = philosophers[i].meal_count;
-			pthread_mutex_unlock(&philosophers[i].meal_mutex);
-			if (current_time - last_meal >= philosophers[i].time_to_die) {
-				pthread_mutex_lock(philosophers[i].printf_mutex);
-				printf("%lu %d died\n", current_time, philosophers[i].id);
-				exit(0);
-			}
-			if (required_meals != -1 && meals < required_meals) {
-				all_ate_enough = 0;
-			}
-		}
-		if (required_meals != -1 && all_ate_enough) {
-			exit(0);
-		}
-		usleep(1000);
-	}
-	return NULL;
+void	handle_philosopher_death(t_philosopher *philo)
+{
+	pthread_mutex_lock(philo->printf_mutex);
+	printf("%lu %d died\n", get_current_time(), philo->id);
+	exit(EXIT_SUCCESS);
 }
+
+
+// void *monitor(void *arg) {
+// 	t_philosopher *philosophers = (t_philosopher *)arg;
+// 	int required_meals = philosophers[0].required_meals;
+// 	int num_philos = philosophers[0].total_philosophers;
+// 	while (1) {
+// 		unsigned long current_time = get_current_time();
+// 		int all_ate_enough = 1;
+// 		for (int i = 0; i < num_philos; i++) {
+// 			pthread_mutex_lock(&philosophers[i].meal_mutex);
+// 			unsigned long last_meal = philosophers[i].last_meal_time;
+// 			int meals = philosophers[i].meal_count;
+// 			pthread_mutex_unlock(&philosophers[i].meal_mutex);
+// 			if (current_time - last_meal >= philosophers[i].time_to_die) {
+// 				pthread_mutex_lock(philosophers[i].printf_mutex);
+// 				printf("%lu %d died\n", current_time, philosophers[i].id);
+// 				exit(0);
+// 			}
+// 			if (required_meals != -1 && meals < required_meals) {
+// 				all_ate_enough = 0;
+// 			}
+// 		}
+// 		if (required_meals != -1 && all_ate_enough) {
+// 			exit(0);
+// 		}
+// 		usleep(1000);
+// 	}
+// 	return NULL;
+// }
 
 int main(int argc, char **argv) {
     if (argc < 5 || argc > 6) {
