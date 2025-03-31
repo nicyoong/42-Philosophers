@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 20:14:14 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 20:48:28 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,6 +187,8 @@ void		*monitor(void *arg)
 	}
 	return (NULL);
 }
+
+//It still eats after fulfilling all conditions that philos must eat at least n times and then immediately stop
 
 int main(int argc, char **argv) {
     if (argc < 5 || argc > 6) {
