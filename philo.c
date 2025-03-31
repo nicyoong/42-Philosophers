@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 20:38:41 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 20:38:26 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,15 +136,6 @@ void handle_philosopher_death(t_philosopher *philo) {
 		pthread_mutex_unlock(&philo[i].sim_end_mutex);
 	}
 }
-
-bool should_simulation_end(t_philosopher *philo) {
-	bool should_end;
-	pthread_mutex_lock(&philo->sim_end_mutex);
-	should_end = philo->simulation_should_end;
-	pthread_mutex_unlock(&philo->sim_end_mutex);
-	return should_end;
-}
-
 
 bool	check_philosopher_status(t_philosopher *philo, unsigned long current_time)
 {
