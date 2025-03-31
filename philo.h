@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:30:52 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 00:26:41 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 19:19:22 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <stdio.h>
 # include <stdlib.h>
+# include <stdbool.h>
 # include <unistd.h>
 # include <pthread.h>
 # include <sys/time.h>
