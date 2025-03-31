@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:30:52 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 19:19:22 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/03/31 20:37:11 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ typedef struct s_philosopher
 	int				required_meals;
 	pthread_mutex_t	*printf_mutex;
 	int				total_philosophers;
+	bool			simulation_should_end;
+	pthread_mutex_t	sim_end_mutex;
 }	t_philosopher;
 
 #endif
