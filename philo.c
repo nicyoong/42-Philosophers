@@ -202,6 +202,18 @@ int	validate_arguments(int argc, char **argv)
 	return (0);
 }
 
+int	initialize_forks(pthread_mutex_t **forks, int num_philos)
+{
+	int	i;
+
+	*forks = malloc(num_philos * sizeof(pthread_mutex_t));
+	if (!*forks)
+		return (printf("Error: malloc failed\n"), 1);
+	for (i = 0; i < num_philos; i++)
+		pthread_mutex_init(&(*forks)[i], NULL);
+	return (0);
+}
+
 // int	main(int argc, char **argv)
 // {
 // 	int				num_philos;
