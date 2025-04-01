@@ -249,6 +249,30 @@ init_philosopher(&(*philosophers)[i], i, forks, num_philos, argv, &printf_mutex)
 return (0);
 }
 
+int	create_threads(t_philosopher *philosophers, int num_philos)
+{
+	int			i;
+	pthread_t	*threads;
+	pthread_t	monitor_thread;
+
+	if (pthread_create(&monitor_thread, NULL, monitor, philosophers) != 0)
+		return (1);
+	pthread_detach(monitor_thread);
+	threads = malloc(num_philos * sizeof(pthread_t));
+	if (!threads)
+		return (1);
+	for (i = 0; i < num_philos; i++)
+	{
+		if (pthread_create(&threads[i], NULL, philosopher_life, &philosophers[i]) != 0)
+			return (free(threads), 1);
+		usleep(100);
+	}
+	for (i = 0; i < num_philos; i++)
+		pthread_join(threads[i], NULL);
+	free(threads);
+	return (0);
+}
+
 // int	main(int argc, char **argv)
 // {
 // 	int				num_philos;
