@@ -34,7 +34,6 @@ typedef struct s_philosopher
 	int				required_meals;
 	pthread_mutex_t	*printf_mutex;
 	int				total_philosophers;
-	unsigned long	start_time;
 }	t_philosopher;
 
 typedef struct s_data
