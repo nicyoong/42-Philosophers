@@ -189,7 +189,7 @@ void		*monitor(void *arg)
 		}
 		if (req_meals != -1 && check_meal_completion(philos, num_philos, req_meals))
 			exit(EXIT_SUCCESS);
-		usleep(5000);
+		usleep(1000);
 	}
 	return (NULL);
 }
@@ -358,3 +358,4 @@ int	main(int argc, char **argv)
 	cleanup_resources(forks, philosophers, num_philos, &printf_mutex);
 	return (0);
 }
+
