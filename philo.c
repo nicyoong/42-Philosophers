@@ -39,7 +39,8 @@ int	ft_atoi(const char *str)
 
 unsigned long	get_current_time()
 {
-	struct timeval tv;
+	struct timeval	tv;
+
 	gettimeofday(&tv, NULL);
 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
@@ -187,8 +188,6 @@ void		*monitor(void *arg)
 	return (NULL);
 }
 
-//It still eats after fulfilling all conditions that philos must eat at least n times and then immediately stop
-
 int	validate_arguments(int argc, char **argv)
 {
 	int	num_philos;
@@ -209,8 +208,12 @@ int	initialize_forks(pthread_mutex_t **forks, int num_philos)
 	*forks = malloc(num_philos * sizeof(pthread_mutex_t));
 	if (!*forks)
 		return (printf("Error: malloc failed\n"), 1);
-	for (i = 0; i < num_philos; i++)
+	i = 0;
+	while (i < num_philos)
+	{
 		pthread_mutex_init(&(*forks)[i], NULL);
+		i++;
+	}
 	return (0);
 }
 
@@ -315,6 +318,12 @@ void init_config_struct(t_init_config *config,
 	};
 }
 
+void	set_printf_mutex(t_init_config *config, 
+	pthread_mutex_t *printf_mutex)
+{
+	config->printf_mutex = printf_mutex;
+}
+
 int	main(int argc, char **argv)
 {
 	int				num_philos;
@@ -329,16 +338,13 @@ int	main(int argc, char **argv)
 	if (initialize_forks(&forks, num_philos))
 		return (1);
 	pthread_mutex_init(&printf_mutex, NULL);
-	config = (t_init_config){
-		.forks = forks,
-		.num_philos = num_philos,
-		.argv = argv,
-		.printf_mutex = &printf_mutex
-	};
+	init_config_struct(&config, forks, num_philos, argv);
+    set_printf_mutex(&config, &printf_mutex);
 	if (initialize_philosophers(&philosophers, &config, argc))
 		return (handle_init_error(&printf_mutex, forks));
 	if (create_threads(philosophers, num_philos))
-		return (handle_thread_error(&printf_mutex, forks, philosophers, num_philos));
+		return (handle_thread_error(&printf_mutex, forks,
+			philosophers, num_philos));
 	cleanup_resources(forks, philosophers, num_philos, &printf_mutex);
 	return (0);
 }
