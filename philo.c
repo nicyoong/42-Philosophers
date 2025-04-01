@@ -232,7 +232,7 @@ void init_philosopher(t_philosopher *philo, int i, t_init_config *config, int ar
     philo->total_philosophers = config->num_philos;
 }
 
-initialize_philosophers(t_philosopher **philosophers, t_init_config *config, int argc)
+int	initialize_philosophers(t_philosopher **philosophers, t_init_config *config, int argc)
 {
     int i;
     
@@ -285,6 +285,23 @@ free(forks);
 free(philosophers);
 }
 
+int	handle_init_error(pthread_mutex_t *printf_mutex, pthread_mutex_t *forks, int num_philos)
+{
+	pthread_mutex_destroy(printf_mutex);
+	free(forks);
+	return (1);
+}
+
+int handle_thread_error(pthread_mutex_t *printf_mutex, 
+	pthread_mutex_t *forks,
+	t_philosopher *philosophers,
+	int num_philos)
+{
+	cleanup_resources(forks, philosophers, num_philos, printf_mutex);
+	printf("Error: thread creation failed\n");
+	return (1);
+}
+
 int	main(int argc, char **argv)
 {
 	int				num_philos;
@@ -296,105 +313,20 @@ int	main(int argc, char **argv)
 	if (validate_arguments(argc, argv))
 		return (1);
 	num_philos = ft_atoi(argv[1]);
-	
-	// Initialize forks
 	if (initialize_forks(&forks, num_philos))
 		return (1);
-	
-	// Initialize printf mutex
 	pthread_mutex_init(&printf_mutex, NULL);
-	
-	// Setup configuration struct
 	config = (t_init_config){
 		.forks = forks,
 		.num_philos = num_philos,
 		.argv = argv,
 		.printf_mutex = &printf_mutex
 	};
-	
-	// Initialize philosophers with the config
 	if (initialize_philosophers(&philosophers, &config, argc))
-	{
-		pthread_mutex_destroy(&printf_mutex);
-		free(forks);
-		return (1);
-	}
-	
-	// Create and manage threads
+		return (handle_init_error(&printf_mutex, forks, num_philos));
 	if (create_threads(philosophers, num_philos))
-	{
-		cleanup_resources(forks, philosophers, num_philos, &printf_mutex);
-		return (printf("Error: thread creation failed\n"), 1);
-	}
-	
-	// Cleanup
+		return (handle_thread_error(&printf_mutex, forks, philosophers, num_philos));
 	cleanup_resources(forks, philosophers, num_philos, &printf_mutex);
 	return (0);
 }
 
-// int	main(int argc, char **argv)
-// {
-// 	int				num_philos;
-// 	t_philosopher	*philosophers;
-// 	pthread_mutex_t	*forks;
-// 	pthread_mutex_t	printf_mutex;
-// 	pthread_t		*threads;
-// 	pthread_t		monitor_thread;
-// 	int				i;
-
-// 	if (argc < 5 || argc > 6)
-// 		return (printf("Error: wrong number of arguments\n"), 1);
-// 	num_philos = ft_atoi(argv[1]);
-// 	if (num_philos <= 0 || ft_atoi(argv[2]) <= 0 || ft_atoi(argv[3]) <= 0
-// 		|| ft_atoi(argv[4]) <= 0 || (argc == 6 && ft_atoi(argv[5]) <= 0))
-// 		return (printf("Error: invalid arguments\n"), 1);
-// 	forks = malloc(num_philos * sizeof(pthread_mutex_t));
-// 	if (!forks)
-// 		return (printf("Error: malloc failed\n"), 1);
-// 	for (i = 0; i < num_philos; i++)
-// 		pthread_mutex_init(&forks[i], NULL);
-// 	pthread_mutex_init(&printf_mutex, NULL);
-// 	philosophers = malloc(num_philos * sizeof(t_philosopher));
-// 	if (!philosophers)
-// 		return (free(forks), printf("Error: malloc failed\n"), 1);
-// 	int required_meals = argc == 6 ? ft_atoi(argv[5]) : -1;
-// 	for (i = 0; i < num_philos; i++)
-// 	{
-// 		philosophers[i].id = i + 1;
-// 		philosophers[i].left_fork = &forks[i];
-// 		philosophers[i].right_fork = &forks[(i + 1) % num_philos];
-// 		pthread_mutex_init(&philosophers[i].meal_mutex, NULL);
-// 		philosophers[i].last_meal_time = get_current_time();
-// 		philosophers[i].meal_count = 0;
-// 		philosophers[i].time_to_die = ft_atoi(argv[2]);
-// 		philosophers[i].time_to_eat = ft_atoi(argv[3]);
-// 		philosophers[i].time_to_sleep = ft_atoi(argv[4]);
-// 		philosophers[i].required_meals = required_meals;
-// 		philosophers[i].printf_mutex = &printf_mutex;
-// 		philosophers[i].total_philosophers = num_philos;
-// 	}
-// 	if (pthread_create(&monitor_thread, NULL, monitor, philosophers) != 0)
-// 		return (free(forks), free(philosophers), printf("Error: thread creation failed\n"), 1);
-// 	pthread_detach(monitor_thread);
-// 	threads = malloc(num_philos * sizeof(pthread_t));
-// 	if (!threads)
-// 		return (free(forks), free(philosophers), printf("Error: malloc failed\n"), 1);
-// 	for (i = 0; i < num_philos; i++)
-// 	{
-// 		if (pthread_create(&threads[i], NULL, philosopher_life, &philosophers[i]) != 0)
-// 			return (free(forks), free(philosophers), free(threads), printf("Error: thread creation failed\n"), 1);
-// 		usleep(100);
-// 	}
-// 	for (i = 0; i < num_philos; i++)
-// 		pthread_join(threads[i], NULL);
-// 	free(threads);
-// 	for (i = 0; i < num_philos; i++)
-// 	{
-// 		pthread_mutex_destroy(&forks[i]);
-// 		pthread_mutex_destroy(&philosophers[i].meal_mutex);
-// 	}
-// 	pthread_mutex_destroy(&printf_mutex);
-// 	free(forks);
-// 	free(philosophers);
-// 	return (0);
-// }
