@@ -65,7 +65,7 @@ void	think(t_philosopher *philo)
 	print_message(philo, "is thinking");
 }
 
-void	take_forks(t_philosopher *philo)
+void    take_forks(t_philosopher *philo)
 {
 	if (philo->id % 2 == 0)
 	{
@@ -78,6 +78,7 @@ void	take_forks(t_philosopher *philo)
 	{
 		pthread_mutex_lock(philo->right_fork);
 		print_message(philo, "has taken a fork");
+		precise_usleep(100);
 		pthread_mutex_lock(philo->left_fork);
 		print_message(philo, "has taken a fork");
 	}
@@ -120,6 +121,8 @@ void	*philosopher_life(void *arg)
 	t_philosopher	*philo;
 
 	philo = (t_philosopher *)arg;
+	if (philo->id % 2 == 0)
+        precise_usleep(100);
 	while (1)
 	{
 		think(philo);
@@ -150,7 +153,7 @@ bool check_philosopher_status(t_philosopher *philo, unsigned long current_time)
 
 	pthread_mutex_lock(&philo->meal_mutex);
 	time_since_meal = current_time - philo->last_meal_time;
-	starving = (time_since_meal >= philo->time_to_die);
+	starving = (time_since_meal > philo->time_to_die);
 	pthread_mutex_unlock(&philo->meal_mutex);
 	return (starving);
 }
@@ -195,7 +198,7 @@ void		*monitor(void *arg)
 		if (req_meals != -1
 			&& check_meal_completion(philos, num_philos, req_meals))
 			exit(EXIT_SUCCESS);
-		precise_usleep(1000);
+		precise_usleep(100);
 	}
 	return (NULL);
 }
