@@ -285,7 +285,7 @@ free(forks);
 free(philosophers);
 }
 
-int	handle_init_error(pthread_mutex_t *printf_mutex, pthread_mutex_t *forks, int num_philos)
+int	handle_init_error(pthread_mutex_t *printf_mutex, pthread_mutex_t *forks)
 {
 	pthread_mutex_destroy(printf_mutex);
 	free(forks);
@@ -323,7 +323,7 @@ int	main(int argc, char **argv)
 		.printf_mutex = &printf_mutex
 	};
 	if (initialize_philosophers(&philosophers, &config, argc))
-		return (handle_init_error(&printf_mutex, forks, num_philos));
+		return (handle_init_error(&printf_mutex, forks));
 	if (create_threads(philosophers, num_philos))
 		return (handle_thread_error(&printf_mutex, forks, philosophers, num_philos));
 	cleanup_resources(forks, philosophers, num_philos, &printf_mutex);
