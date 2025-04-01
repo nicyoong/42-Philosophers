@@ -132,7 +132,8 @@ void	handle_philosopher_death(t_philosopher *philo)
 	exit(EXIT_SUCCESS);
 }
 
-bool	check_philosopher_status(t_philosopher *philo, unsigned long current_time)
+bool	check_philosopher_status(t_philosopher *philo,
+	unsigned long current_time)
 {
 	bool	starving;
 	
@@ -143,7 +144,8 @@ bool	check_philosopher_status(t_philosopher *philo, unsigned long current_time)
 	return (starving);
 }
 
-bool	check_meal_completion(t_philosopher *philos, int num_philos, int required)
+bool	check_meal_completion(t_philosopher *philos,
+	int num_philos, int required)
 {
 	int		i;
 	bool	all_ate;
@@ -217,7 +219,8 @@ int	initialize_forks(pthread_mutex_t **forks, int num_philos)
 	return (0);
 }
 
-void init_philosopher(t_philosopher *philo, int i, t_init_config *config, int argc)
+void init_philosopher(t_philosopher *philo,
+	int i, t_init_config *config, int argc)
 {
 	int required_meals = (argc == 6) ? ft_atoi(config->argv[5]) : -1;
 
@@ -235,7 +238,8 @@ void init_philosopher(t_philosopher *philo, int i, t_init_config *config, int ar
 	philo->total_philosophers = config->num_philos;
 }
 
-int	initialize_philosophers(t_philosopher **philosophers, t_init_config *config, int argc)
+int	initialize_philosophers(t_philosopher **philosophers,
+	t_init_config *config, int argc)
 {
 	int i;
 
@@ -303,19 +307,15 @@ int	handle_init_error(pthread_mutex_t *printf_mutex, pthread_mutex_t *forks)
 }
 
 int handle_thread_error(pthread_mutex_t *printf_mutex, 
-	pthread_mutex_t *forks,
-	t_philosopher *philosophers,
-	int num_philos)
+	pthread_mutex_t *forks,	t_philosopher *philosophers, int num_philos)
 {
 	cleanup_resources(forks, philosophers, num_philos, printf_mutex);
 	printf("Error: thread creation failed\n");
 	return (1);
 }
 
-void init_config_struct(t_init_config *config, 
-	pthread_mutex_t *forks,
-	int num_philos,
-	char **argv)
+void init_config_struct(t_init_config *config, 	pthread_mutex_t *forks,
+	int num_philos,	char **argv)
 {
 	*config = (t_init_config){
 	.forks = forks,
@@ -325,8 +325,7 @@ void init_config_struct(t_init_config *config,
 	};
 }
 
-void	set_printf_mutex(t_init_config *config, 
-	pthread_mutex_t *printf_mutex)
+void	set_printf_mutex(t_init_config *config,	pthread_mutex_t *printf_mutex)
 {
 	config->printf_mutex = printf_mutex;
 }
