@@ -214,6 +214,26 @@ int	initialize_forks(pthread_mutex_t **forks, int num_philos)
 	return (0);
 }
 
+void	init_philosopher(t_philosopher *philo, int i, pthread_mutex_t *forks, 
+	int num_philos, char **argv, pthread_mutex_t *printf_mutex)
+{
+int	required_meals;
+
+required_meals = (argc == 6) ? ft_atoi(argv[5]) : -1;
+philo->id = i + 1;
+philo->left_fork = &forks[i];
+philo->right_fork = &forks[(i + 1) % num_philos];
+pthread_mutex_init(&philo->meal_mutex, NULL);
+philo->last_meal_time = get_current_time();
+philo->meal_count = 0;
+philo->time_to_die = ft_atoi(argv[2]);
+philo->time_to_eat = ft_atoi(argv[3]);
+philo->time_to_sleep = ft_atoi(argv[4]);
+philo->required_meals = required_meals;
+philo->printf_mutex = printf_mutex;
+philo->total_philosophers = num_philos;
+}
+
 // int	main(int argc, char **argv)
 // {
 // 	int				num_philos;
