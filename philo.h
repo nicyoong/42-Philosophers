@@ -86,6 +86,6 @@ void 			init_config_struct(t_init_config *config,
 				pthread_mutex_t *forks,
 				int num_philos,	char **argv);
 void			set_printf_mutex(t_init_config *config,
-				pthread_mutex_t *printf_mutex)
+				pthread_mutex_t *printf_mutex);
 
 #endif
