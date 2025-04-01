@@ -42,13 +42,21 @@ unsigned long	get_current_time()
 	struct timeval	tv;
 
 	gettimeofday(&tv, NULL);
-	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
+	return (tv.tv_sec * 1000000 + tv.tv_usec);
+}
+
+void precise_usleep(unsigned long usec) {
+	unsigned long start;
+
+	start = get_current_time();
+	while (get_current_time() - start < usec)
+		usleep(20);
 }
 
 void	print_message(t_philosopher *philo, const char *msg)
 {
 	pthread_mutex_lock(philo->printf_mutex);
-	printf("%lu %d %s\n", get_current_time(), philo->id, msg);
+	printf("%lu %d %s\n", get_current_time() / 1000, philo->id, msg);
 	pthread_mutex_unlock(philo->printf_mutex);
 }
 
@@ -85,7 +93,7 @@ void	update_last_meal(t_philosopher *philo)
 void	eat(t_philosopher *philo)
 {
 	print_message(philo, "is eating");
-	usleep(philo->time_to_eat * 1000);
+	precise_usleep(philo->time_to_eat);
 }
 
 void	release_forks(t_philosopher *philo)
@@ -104,7 +112,7 @@ void	update_meal_count(t_philosopher *philo)
 void	philo_sleep(t_philosopher *philo)
 {
 	print_message(philo, "is sleeping");
-	usleep(philo->time_to_sleep * 1000);
+	precise_usleep(philo->time_to_sleep);
 }
 
 void	*philosopher_life(void *arg)
@@ -129,42 +137,39 @@ void	handle_philosopher_death(t_philosopher *philo)
 {
 	pthread_mutex_lock(&philo->meal_mutex);
 	pthread_mutex_lock(philo->printf_mutex);
-	printf("%lu %d died\n", get_current_time(), philo->id);
+	printf("%lu %d died\n", get_current_time() / 1000, philo->id);
 	pthread_mutex_unlock(philo->printf_mutex);
 	pthread_mutex_unlock(&philo->meal_mutex);
 	exit(EXIT_SUCCESS);
 }
 
-bool	check_philosopher_status(t_philosopher *philo,
-	unsigned long current_time)
+bool check_philosopher_status(t_philosopher *philo, unsigned long current_time)
 {
-	bool	starving;
-	
+	bool			starving;
+	unsigned long	time_since_meal;
+
 	pthread_mutex_lock(&philo->meal_mutex);
-	starving = (current_time - philo->last_meal_time) >= philo->time_to_die;
+	time_since_meal = current_time - philo->last_meal_time;
+	starving = (time_since_meal >= philo->time_to_die);
 	pthread_mutex_unlock(&philo->meal_mutex);
-    if (starving)
-        handle_philosopher_death(philo);
-    return (starving);
+	return (starving);
 }
 
 bool	check_meal_completion(t_philosopher *philos,
 	int num_philos, int required)
 {
-	int		i;
-	bool	all_ate;
+	int	i;
 
-	all_ate = true;
-	i = 0;
-	while (i < num_philos)
-	{
+	i = -1;
+	while (++i < num_philos) {
 		pthread_mutex_lock(&philos[i].meal_mutex);
-		if (philos[i].meal_count < required)
-			all_ate = false;
+		if (philos[i].meal_count < required) {
+			pthread_mutex_unlock(&philos[i].meal_mutex);
+			return (false);
+		}
 		pthread_mutex_unlock(&philos[i].meal_mutex);
-		i++;
 	}
-	return (all_ate);
+	return (true);
 }
 
 void		*monitor(void *arg)
@@ -187,9 +192,10 @@ void		*monitor(void *arg)
 			if (check_philosopher_status(&philos[i], current_time))
 				handle_philosopher_death(&philos[i]);
 		}
-		if (req_meals != -1 && check_meal_completion(philos, num_philos, req_meals))
+		if (req_meals != -1
+			&& check_meal_completion(philos, num_philos, req_meals))
 			exit(EXIT_SUCCESS);
-		usleep(1000);
+		precise_usleep(1000);
 	}
 	return (NULL);
 }
@@ -234,9 +240,9 @@ void init_philosopher(t_philosopher *philo,
 	pthread_mutex_init(&philo->meal_mutex, NULL);
 	philo->last_meal_time = get_current_time();
 	philo->meal_count = 0;
-	philo->time_to_die = ft_atoi(config->argv[2]);
-	philo->time_to_eat = ft_atoi(config->argv[3]);
-	philo->time_to_sleep = ft_atoi(config->argv[4]);
+	philo->time_to_die = ft_atoi(config->argv[2]) * 1000;
+	philo->time_to_eat = ft_atoi(config->argv[3]) * 1000;
+	philo->time_to_sleep = ft_atoi(config->argv[4]) * 1000;
 	philo->required_meals = required_meals;
 	philo->printf_mutex = config->printf_mutex;
 	philo->total_philosophers = config->num_philos;
@@ -276,7 +282,7 @@ int	create_threads(t_philosopher *philosophers, int num_philos)
 	{
 		if (pthread_create(&threads[i], NULL, philosopher_life, &philosophers[i]) != 0)
 			return (free(threads), 1);
-		usleep(100);
+		precise_usleep(100);
 		i++;
 	}
 	i = 0;
