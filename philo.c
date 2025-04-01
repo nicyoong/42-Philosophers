@@ -273,16 +273,16 @@ int	create_threads(t_philosopher *philosophers, int num_philos)
 void	cleanup_resources(pthread_mutex_t *forks, t_philosopher *philosophers,
 	int num_philos, pthread_mutex_t *printf_mutex)
 {
-int	i;
+	int	i;
 
-for (i = 0; i < num_philos; i++)
-{
-pthread_mutex_destroy(&forks[i]);
-pthread_mutex_destroy(&philosophers[i].meal_mutex);
-}
-pthread_mutex_destroy(printf_mutex);
-free(forks);
-free(philosophers);
+	for (i = 0; i < num_philos; i++)
+	{
+		pthread_mutex_destroy(&forks[i]);
+		pthread_mutex_destroy(&philosophers[i].meal_mutex);
+	}
+	pthread_mutex_destroy(printf_mutex);
+	free(forks);
+	free(philosophers);
 }
 
 int	handle_init_error(pthread_mutex_t *printf_mutex, pthread_mutex_t *forks)
