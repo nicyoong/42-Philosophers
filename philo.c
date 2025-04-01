@@ -120,9 +120,6 @@ void	*philosopher_life(void *arg)
 		eat(philo);
 		update_meal_count(philo);
 		release_forks(philo);
-		if (philo->required_meals != -1
-			&& philo->meal_count >= philo->required_meals)
-			break;
 		philo_sleep(philo);
 	}
 	return (NULL);
@@ -141,16 +138,14 @@ void	handle_philosopher_death(t_philosopher *philo)
 bool	check_philosopher_status(t_philosopher *philo,
 	unsigned long current_time)
 {
-	bool			starving;
-	unsigned long	time_since_last_meal;
-
+	bool	starving;
+	
 	pthread_mutex_lock(&philo->meal_mutex);
-	time_since_last_meal = current_time - philo->last_meal_time;
-	starving = (time_since_last_meal >= philo->time_to_die);
+	starving = (current_time - philo->last_meal_time) >= philo->time_to_die;
 	pthread_mutex_unlock(&philo->meal_mutex);
-	if (starving && time_since_last_meal > philo->time_to_die)
-		return true;
-	return false;
+    if (starving)
+        handle_philosopher_death(philo);
+    return (starving);
 }
 
 bool	check_meal_completion(t_philosopher *philos,
