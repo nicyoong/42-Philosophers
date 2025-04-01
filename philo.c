@@ -232,19 +232,18 @@ void init_philosopher(t_philosopher *philo, int i, t_init_config *config, int ar
     philo->total_philosophers = config->num_philos;
 }
 
-int	initialize_philosophers(t_philosopher **philosophers, pthread_mutex_t *forks,
-	int num_philos, char **argv)
+initialize_philosophers(t_philosopher **philosophers, t_init_config *config, int argc)
 {
-int				i;
-pthread_mutex_t	printf_mutex;
-
-*philosophers = malloc(num_philos * sizeof(t_philosopher));
-if (!*philosophers)
-return (free(forks), printf("Error: malloc failed\n"), 1);
-pthread_mutex_init(&printf_mutex, NULL);
-for (i = 0; i < num_philos; i++)
-init_philosopher(&(*philosophers)[i], i, forks, num_philos, argv, &printf_mutex);
-return (0);
+    int i;
+    
+    *philosophers = malloc(config->num_philos * sizeof(t_philosopher));
+    if (!*philosophers)
+        return (printf("Error: malloc failed\n"), 1);
+    
+    for (i = 0; i < config->num_philos; i++)
+        init_philosopher(&(*philosophers)[i], i, config, argc);
+    
+    return 0;
 }
 
 int	create_threads(t_philosopher *philosophers, int num_philos)
