@@ -288,6 +288,29 @@ free(forks);
 free(philosophers);
 }
 
+int	main(int argc, char **argv)
+{
+	int				num_philos;
+	t_philosopher	*philosophers;
+	pthread_mutex_t	*forks;
+	pthread_mutex_t	printf_mutex;
+
+	if (validate_arguments(argc, argv))
+		return (1);
+	num_philos = ft_atoi(argv[1]);
+	if (initialize_forks(&forks, num_philos))
+		return (1);
+	if (initialize_philosophers(&philosophers, forks, num_philos, argv))
+		return (1);
+	if (create_threads(philosophers, num_philos))
+	{
+		cleanup_resources(forks, philosophers, num_philos, &printf_mutex);
+		return (printf("Error: thread creation failed\n"), 1);
+	}
+	cleanup_resources(forks, philosophers, num_philos, &printf_mutex);
+	return (0);
+}
+
 // int	main(int argc, char **argv)
 // {
 // 	int				num_philos;
