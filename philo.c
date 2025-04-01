@@ -219,34 +219,36 @@ int	initialize_forks(pthread_mutex_t **forks, int num_philos)
 
 void init_philosopher(t_philosopher *philo, int i, t_init_config *config, int argc)
 {
-    int required_meals = (argc == 6) ? ft_atoi(config->argv[5]) : -1;
-    
-    philo->id = i + 1;
-    philo->left_fork = &config->forks[i];
-    philo->right_fork = &config->forks[(i + 1) % config->num_philos];
-    pthread_mutex_init(&philo->meal_mutex, NULL);
-    philo->last_meal_time = get_current_time();
-    philo->meal_count = 0;
-    philo->time_to_die = ft_atoi(config->argv[2]);
-    philo->time_to_eat = ft_atoi(config->argv[3]);
-    philo->time_to_sleep = ft_atoi(config->argv[4]);
-    philo->required_meals = required_meals;
-    philo->printf_mutex = config->printf_mutex;
-    philo->total_philosophers = config->num_philos;
+	int required_meals = (argc == 6) ? ft_atoi(config->argv[5]) : -1;
+
+	philo->id = i + 1;
+	philo->left_fork = &config->forks[i];
+	philo->right_fork = &config->forks[(i + 1) % config->num_philos];
+	pthread_mutex_init(&philo->meal_mutex, NULL);
+	philo->last_meal_time = get_current_time();
+	philo->meal_count = 0;
+	philo->time_to_die = ft_atoi(config->argv[2]);
+	philo->time_to_eat = ft_atoi(config->argv[3]);
+	philo->time_to_sleep = ft_atoi(config->argv[4]);
+	philo->required_meals = required_meals;
+	philo->printf_mutex = config->printf_mutex;
+	philo->total_philosophers = config->num_philos;
 }
 
 int	initialize_philosophers(t_philosopher **philosophers, t_init_config *config, int argc)
 {
-    int i;
-    
-    *philosophers = malloc(config->num_philos * sizeof(t_philosopher));
-    if (!*philosophers)
-        return (printf("Error: malloc failed\n"), 1);
-    
-    for (i = 0; i < config->num_philos; i++)
-        init_philosopher(&(*philosophers)[i], i, config, argc);
-    
-    return 0;
+	int i;
+
+	*philosophers = malloc(config->num_philos * sizeof(t_philosopher));
+	if (!*philosophers)
+		return (printf("Error: malloc failed\n"), 1);
+	i = 0;
+	while (i < config->num_philos)
+	{
+		init_philosopher(&(*philosophers)[i], i, config, argc);
+		i++;
+	}
+	return 0;
 }
 
 int	create_threads(t_philosopher *philosophers, int num_philos)
@@ -261,14 +263,17 @@ int	create_threads(t_philosopher *philosophers, int num_philos)
 	threads = malloc(num_philos * sizeof(pthread_t));
 	if (!threads)
 		return (1);
-	for (i = 0; i < num_philos; i++)
+	i = 0;
+	while (i < num_philos)
 	{
 		if (pthread_create(&threads[i], NULL, philosopher_life, &philosophers[i]) != 0)
 			return (free(threads), 1);
 		usleep(100);
+		i++;
 	}
-	for (i = 0; i < num_philos; i++)
-		pthread_join(threads[i], NULL);
+	i = 0;
+	while (i < num_philos)
+		pthread_join(threads[i++], NULL);
 	free(threads);
 	return (0);
 }
@@ -278,10 +283,12 @@ void	cleanup_resources(pthread_mutex_t *forks, t_philosopher *philosophers,
 {
 	int	i;
 
-	for (i = 0; i < num_philos; i++)
+	i = 0;
+	while (i < num_philos)
 	{
 		pthread_mutex_destroy(&forks[i]);
 		pthread_mutex_destroy(&philosophers[i].meal_mutex);
+		i++;
 	}
 	pthread_mutex_destroy(printf_mutex);
 	free(forks);
@@ -339,7 +346,7 @@ int	main(int argc, char **argv)
 		return (1);
 	pthread_mutex_init(&printf_mutex, NULL);
 	init_config_struct(&config, forks, num_philos, argv);
-    set_printf_mutex(&config, &printf_mutex);
+	set_printf_mutex(&config, &printf_mutex);
 	if (initialize_philosophers(&philosophers, &config, argc))
 		return (handle_init_error(&printf_mutex, forks));
 	if (create_threads(philosophers, num_philos))
