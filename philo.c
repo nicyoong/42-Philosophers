@@ -127,8 +127,11 @@ void	*philosopher_life(void *arg)
 
 void	handle_philosopher_death(t_philosopher *philo)
 {
+	pthread_mutex_lock(&philo->meal_mutex);
 	pthread_mutex_lock(philo->printf_mutex);
 	printf("%lu %d died\n", get_current_time(), philo->id);
+	pthread_mutex_unlock(philo->printf_mutex);
+	pthread_mutex_unlock(&philo->meal_mutex);
 	exit(EXIT_SUCCESS);
 }
 
@@ -140,8 +143,9 @@ bool	check_philosopher_status(t_philosopher *philo,
 	pthread_mutex_lock(&philo->meal_mutex);
 	starving = (current_time - philo->last_meal_time) >= philo->time_to_die;
 	pthread_mutex_unlock(&philo->meal_mutex);
-	
-	return (starving);
+    if (starving)
+        handle_philosopher_death(philo);
+    return (starving);
 }
 
 bool	check_meal_completion(t_philosopher *philos,
