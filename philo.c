@@ -234,6 +234,21 @@ philo->printf_mutex = printf_mutex;
 philo->total_philosophers = num_philos;
 }
 
+int	initialize_philosophers(t_philosopher **philosophers, pthread_mutex_t *forks,
+	int num_philos, char **argv)
+{
+int				i;
+pthread_mutex_t	printf_mutex;
+
+*philosophers = malloc(num_philos * sizeof(t_philosopher));
+if (!*philosophers)
+return (free(forks), printf("Error: malloc failed\n"), 1);
+pthread_mutex_init(&printf_mutex, NULL);
+for (i = 0; i < num_philos; i++)
+init_philosopher(&(*philosophers)[i], i, forks, num_philos, argv, &printf_mutex);
+return (0);
+}
+
 // int	main(int argc, char **argv)
 // {
 // 	int				num_philos;
