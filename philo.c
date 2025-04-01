@@ -291,19 +291,43 @@ int	main(int argc, char **argv)
 	t_philosopher	*philosophers;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	printf_mutex;
+	t_init_config	config;
 
 	if (validate_arguments(argc, argv))
 		return (1);
 	num_philos = ft_atoi(argv[1]);
+	
+	// Initialize forks
 	if (initialize_forks(&forks, num_philos))
 		return (1);
-	if (initialize_philosophers(&philosophers, forks, num_philos, argv))
+	
+	// Initialize printf mutex
+	pthread_mutex_init(&printf_mutex, NULL);
+	
+	// Setup configuration struct
+	config = (t_init_config){
+		.forks = forks,
+		.num_philos = num_philos,
+		.argv = argv,
+		.printf_mutex = &printf_mutex
+	};
+	
+	// Initialize philosophers with the config
+	if (initialize_philosophers(&philosophers, &config, argc))
+	{
+		pthread_mutex_destroy(&printf_mutex);
+		free(forks);
 		return (1);
+	}
+	
+	// Create and manage threads
 	if (create_threads(philosophers, num_philos))
 	{
 		cleanup_resources(forks, philosophers, num_philos, &printf_mutex);
 		return (printf("Error: thread creation failed\n"), 1);
 	}
+	
+	// Cleanup
 	cleanup_resources(forks, philosophers, num_philos, &printf_mutex);
 	return (0);
 }
