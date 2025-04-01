@@ -106,6 +106,42 @@ void	philo_sleep(t_philosopher *philo)
 	usleep(philo->time_to_sleep * 1000);
 }
 
+void	*philosopher_life(void *arg)
+{
+	t_philosopher	*philo;
+
+	philo = (t_philosopher *)arg;
+	while (1)
+	{
+		think(philo);
+		take_forks(philo);
+		update_last_meal(philo);
+		eat(philo);
+		update_meal_count(philo);
+		release_forks(philo);
+		philo_sleep(philo);
+	}
+	return (NULL);
+}
+
+void	handle_philosopher_death(t_philosopher *philo)
+{
+	pthread_mutex_lock(philo->printf_mutex);
+	printf("%lu %d died\n", get_current_time(), philo->id);
+	exit(EXIT_SUCCESS);
+}
+
+bool	check_philosopher_status(t_philosopher *philo, unsigned long current_time)
+{
+	bool	starving;
+	
+	pthread_mutex_lock(&philo->meal_mutex);
+	starving = (current_time - philo->last_meal_time) >= philo->time_to_die;
+	pthread_mutex_unlock(&philo->meal_mutex);
+	
+	return (starving);
+}
+
 bool	check_meal_completion(t_philosopher *philos, int num_philos, int required)
 {
 	int		i;
@@ -124,137 +160,32 @@ bool	check_meal_completion(t_philosopher *philos, int num_philos, int required)
 	return (all_ate);
 }
 
-void *philosopher_life(void *arg)
+void		*monitor(void *arg)
 {
-    t_philosopher *philo = (t_philosopher *)arg;
+	t_philosopher	*philos;
+	int				num_philos;
+	int				req_meals;
+	unsigned long	current_time;
+	int				i;
 
-	// Special handling for one philosopher.
-    if (philo->total_philosophers == 1)
-    {
-        print_message(philo, "has taken a fork");
-        usleep(philo->time_to_die * 1000);  // wait until death time
-        print_message(philo, "died");
-        pthread_mutex_lock(&philo->data->stop_mutex);
-        philo->data->simulation_should_end = true;
-        pthread_mutex_unlock(&philo->data->stop_mutex);
-        return NULL;
-    }
-    while (1)
-    {
-        // Check before starting the cycle.
-        pthread_mutex_lock(&philo->data->stop_mutex);
-        if (philo->data->simulation_should_end)
-        {
-            pthread_mutex_unlock(&philo->data->stop_mutex);
-            break;
-        }
-        pthread_mutex_unlock(&philo->data->stop_mutex);
-
-        // Begin cycle: take forks and eat.
-        take_forks(philo);
-        update_last_meal(philo);
-        eat(philo);
-        update_meal_count(philo);
-
-        // Immediately check if the meal requirement is fulfilled.
-        if (philo->required_meals != -1 &&
-            check_meal_completion(philo->data->philosophers,
-                                  philo->total_philosophers,
-                                  philo->required_meals))
-        {
-            // Release forks immediately before stopping.
-            release_forks(philo);
-            pthread_mutex_lock(&philo->data->stop_mutex);
-            philo->data->simulation_should_end = true;
-            pthread_mutex_unlock(&philo->data->stop_mutex);
-            break;
-        }
-
-        // Normal end-of-cycle: release forks, sleep.
-        release_forks(philo);
-        philo_sleep(philo);
-
-        // Check again before starting next cycle.
-        pthread_mutex_lock(&philo->data->stop_mutex);
-        if (philo->data->simulation_should_end)
-        {
-            pthread_mutex_unlock(&philo->data->stop_mutex);
-            break;
-        }
-        pthread_mutex_unlock(&philo->data->stop_mutex);
-
-        // Then think.
-        think(philo);
-    }
-    return (NULL);
+	philos = (t_philosopher *)arg;
+	num_philos = philos[0].total_philosophers;
+	req_meals = philos[0].required_meals;
+	while (true)
+	{
+		current_time = get_current_time();
+		i = -1;
+		while (++i < num_philos)
+		{
+			if (check_philosopher_status(&philos[i], current_time))
+				handle_philosopher_death(&philos[i]);
+		}
+		if (req_meals != -1 && check_meal_completion(philos, num_philos, req_meals))
+			exit(EXIT_SUCCESS);
+		usleep(1000);
+	}
+	return (NULL);
 }
-
-// void	handle_philosopher_death(t_philosopher *philo)
-// {
-// 	pthread_mutex_lock(philo->printf_mutex);
-// 	printf("%lu %d died\n", get_current_time(), philo->id);
-// 	exit(EXIT_SUCCESS);
-// }
-
-bool	check_philosopher_status(t_philosopher *philo, unsigned long current_time)
-{
-	bool	starving;
-	
-	pthread_mutex_lock(&philo->meal_mutex);
-	starving = (current_time - philo->last_meal_time) >= philo->time_to_die;
-	pthread_mutex_unlock(&philo->meal_mutex);
-	
-	return (starving);
-}
-
-void *monitor(void *arg)
-{
-    t_philosopher *philos = (t_philosopher *)arg;
-    int num_philos = philos[0].total_philosophers;
-    int req_meals = philos[0].required_meals;
-    unsigned long current_time;
-    int i;
-    
-    while (1 && num_philos > 1)
-    {
-        // If someone already set the termination flag, stop.
-        pthread_mutex_lock(&philos[0].data->stop_mutex);
-        if (philos[0].data->simulation_should_end)
-        {
-            pthread_mutex_unlock(&philos[0].data->stop_mutex);
-            break;
-        }
-        pthread_mutex_unlock(&philos[0].data->stop_mutex);
-
-        current_time = get_current_time();
-        for (i = 0; i < num_philos; i++)
-        {
-            if (check_philosopher_status(&philos[i], current_time))
-            {
-                pthread_mutex_lock(&philos[i].data->stop_mutex);
-                if (!philos[i].data->simulation_should_end)
-                {
-                    philos[i].data->simulation_should_end = true;
-                    pthread_mutex_lock(philos[i].printf_mutex);
-                    printf("%lu %d died\n", get_current_time(), philos[i].id);
-                    pthread_mutex_unlock(philos[i].printf_mutex);
-                }
-                pthread_mutex_unlock(&philos[i].data->stop_mutex);
-                return (NULL);
-            }
-        }
-        if (req_meals != -1 && check_meal_completion(philos, num_philos, req_meals))
-        {
-            pthread_mutex_lock(&philos[0].data->stop_mutex);
-            philos[0].data->simulation_should_end = true;
-            pthread_mutex_unlock(&philos[0].data->stop_mutex);
-            break;
-        }
-        usleep(1000);
-    }
-    return (NULL);
-}
-
 
 //It still eats after fulfilling all conditions that philos must eat at least n times and then immediately stop
 
@@ -267,7 +198,6 @@ int	main(int argc, char **argv)
 	pthread_t		*threads;
 	pthread_t		monitor_thread;
 	int				i;
-	t_data			control_data;
 
 	if (argc < 5 || argc > 6)
 		return (printf("Error: wrong number of arguments\n"), 1);
@@ -285,8 +215,6 @@ int	main(int argc, char **argv)
 	if (!philosophers)
 		return (free(forks), printf("Error: malloc failed\n"), 1);
 	int required_meals = argc == 6 ? ft_atoi(argv[5]) : -1;
-	pthread_mutex_init(&control_data.stop_mutex, NULL);
-	control_data.simulation_should_end = false;
 	for (i = 0; i < num_philos; i++)
 	{
 		philosophers[i].id = i + 1;
@@ -301,9 +229,7 @@ int	main(int argc, char **argv)
 		philosophers[i].required_meals = required_meals;
 		philosophers[i].printf_mutex = &printf_mutex;
 		philosophers[i].total_philosophers = num_philos;
-		philosophers[i].data = &control_data;
 	}
-	control_data.philosophers = philosophers;
 	if (pthread_create(&monitor_thread, NULL, monitor, philosophers) != 0)
 		return (free(forks), free(philosophers), printf("Error: thread creation failed\n"), 1);
 	pthread_detach(monitor_thread);

@@ -34,13 +34,11 @@ typedef struct s_philosopher
 	int				required_meals;
 	pthread_mutex_t	*printf_mutex;
 	int				total_philosophers;
-	struct s_data	*data;
 }	t_philosopher;
 
 typedef struct s_data {
     pthread_mutex_t stop_mutex;
     bool simulation_should_end;
-	struct s_philosopher *philosophers;
 } t_data;
 
 #endif
