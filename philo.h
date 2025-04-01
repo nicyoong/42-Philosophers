@@ -42,4 +42,12 @@ typedef struct s_data
 	bool simulation_should_end;
 }	t_data;
 
+typedef struct s_init_config
+{
+	pthread_mutex_t *forks;
+	int num_philos;
+	char **argv;
+	pthread_mutex_t *printf_mutex;
+}	t_init_config;
+
 #endif
