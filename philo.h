@@ -36,9 +36,10 @@ typedef struct s_philosopher
 	int				total_philosophers;
 }	t_philosopher;
 
-typedef struct s_data {
-    pthread_mutex_t stop_mutex;
-    bool simulation_should_end;
-} t_data;
+typedef struct s_data
+{
+	pthread_mutex_t stop_mutex;
+	bool simulation_should_end;
+}	t_data;
 
 #endif
