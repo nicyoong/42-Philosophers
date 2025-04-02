@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 00:15:20 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/03 00:16:25 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/03 00:16:44 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,4 +58,21 @@ void init_philosopher(t_philosopher *philo,
 	philo->required_meals = required_meals;
 	philo->printf_mutex = config->printf_mutex;
 	philo->total_philosophers = config->num_philos;
+}
+
+int	initialize_philosophers(t_philosopher **philosophers,
+	t_init_config *config, int argc)
+{
+	int i;
+
+	*philosophers = malloc(config->num_philos * sizeof(t_philosopher));
+	if (!*philosophers)
+		return (printf("Error: malloc failed\n"), 1);
+	i = 0;
+	while (i < config->num_philos)
+	{
+		init_philosopher(&(*philosophers)[i], i, config, argc);
+		i++;
+	}
+	return (0);
 }

@@ -6,28 +6,11 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/03 00:16:22 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/03 00:16:40 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-int	initialize_philosophers(t_philosopher **philosophers,
-	t_init_config *config, int argc)
-{
-	int i;
-
-	*philosophers = malloc(config->num_philos * sizeof(t_philosopher));
-	if (!*philosophers)
-		return (printf("Error: malloc failed\n"), 1);
-	i = 0;
-	while (i < config->num_philos)
-	{
-		init_philosopher(&(*philosophers)[i], i, config, argc);
-		i++;
-	}
-	return (0);
-}
 
 int	create_threads(t_philosopher *philosophers, int num_philos)
 {
