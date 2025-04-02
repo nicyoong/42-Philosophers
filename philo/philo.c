@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/02 23:24:27 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/02 23:43:04 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -268,7 +268,7 @@ int	initialize_philosophers(t_philosopher **philosophers,
 		init_philosopher(&(*philosophers)[i], i, config, argc);
 		i++;
 	}
-	return 0;
+	return (0);
 }
 
 int	create_threads(t_philosopher *philosophers, int num_philos)
