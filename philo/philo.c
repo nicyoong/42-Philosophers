@@ -6,37 +6,11 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/03 00:13:55 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/03 00:14:33 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-void		*monitor(void *arg)
-{
-	t_philosopher	*philos;
-	int				num_philos;
-	int				req_meals;
-	int				i;
-
-	philos = (t_philosopher *)arg;
-	num_philos = philos[0].total_philosophers;
-	req_meals = philos[0].required_meals;
-	while (true)
-	{
-		i = -1;
-		while (++i < num_philos)
-		{
-			if (check_philosopher_status(&philos[i]))
-				handle_philosopher_death(&philos[i]);
-		}
-		if (req_meals != -1
-			&& check_meal_completion(philos, num_philos, req_meals))
-			exit(EXIT_SUCCESS);
-		precise_usleep(100);
-	}
-	return (NULL);
-}
 
 int	validate_arguments(int argc, char **argv)
 {

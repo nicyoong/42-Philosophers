@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 00:10:11 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/03 00:14:01 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/03 00:14:40 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,4 +51,30 @@ bool	check_meal_completion(t_philosopher *philos,
 		pthread_mutex_unlock(&philos[i].meal_mutex);
 	}
 	return (true);
+}
+
+void		*monitor(void *arg)
+{
+	t_philosopher	*philos;
+	int				num_philos;
+	int				req_meals;
+	int				i;
+
+	philos = (t_philosopher *)arg;
+	num_philos = philos[0].total_philosophers;
+	req_meals = philos[0].required_meals;
+	while (true)
+	{
+		i = -1;
+		while (++i < num_philos)
+		{
+			if (check_philosopher_status(&philos[i]))
+				handle_philosopher_death(&philos[i]);
+		}
+		if (req_meals != -1
+			&& check_meal_completion(philos, num_philos, req_meals))
+			exit(EXIT_SUCCESS);
+		precise_usleep(100);
+	}
+	return (NULL);
 }
