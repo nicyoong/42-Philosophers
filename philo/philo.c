@@ -6,19 +6,11 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/02 23:52:05 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/02 23:57:07 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-void	precise_usleep(unsigned long usec) {
-	unsigned long start;
-
-	start = get_current_time();
-	while (get_current_time() - start < usec)
-		usleep(20);
-}
 
 void	print_message(t_philosopher *philo, const char *msg)
 {
