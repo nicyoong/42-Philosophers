@@ -6,16 +6,11 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/03 00:00:20 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/03 00:02:51 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-void	think(t_philosopher *philo)
-{
-	print_message(philo, "is thinking");
-}
 
 void    take_forks(t_philosopher *philo)
 {
