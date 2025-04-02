@@ -6,17 +6,11 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/03 00:05:09 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/03 00:05:46 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-void	philo_sleep(t_philosopher *philo)
-{
-	print_message(philo, "is sleeping");
-	precise_usleep(philo->time_to_sleep);
-}
 
 void	*philosopher_life(void *arg)
 {
