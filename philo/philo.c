@@ -6,31 +6,11 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/03 00:05:46 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/03 00:06:06 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-void	*philosopher_life(void *arg)
-{
-	t_philosopher	*philo;
-
-	philo = (t_philosopher *)arg;
-	if (philo->id % 2 == 0)
-        precise_usleep(100);
-	while (1)
-	{
-		think(philo);
-		take_forks(philo);
-		update_last_meal(philo);
-		eat(philo);
-		update_meal_count(philo);
-		release_forks(philo);
-		philo_sleep(philo);
-	}
-	return (NULL);
-}
 
 void	handle_philosopher_death(t_philosopher *philo)
 {
