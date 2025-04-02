@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/03 00:07:49 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/03 00:09:06 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,14 +186,6 @@ void	cleanup_resources(pthread_mutex_t *forks, t_philosopher *philosophers,
 	pthread_mutex_destroy(printf_mutex);
 	free(forks);
 	free(philosophers);
-}
-
-int handle_thread_error(pthread_mutex_t *printf_mutex, 
-	pthread_mutex_t *forks,	t_philosopher *philosophers, int num_philos)
-{
-	cleanup_resources(forks, philosophers, num_philos, printf_mutex);
-	printf("Error: thread creation failed\n");
-	return (1);
 }
 
 void init_config_struct(t_init_config *config, 	pthread_mutex_t *forks,
