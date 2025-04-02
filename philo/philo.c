@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/03 00:16:40 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/03 00:56:55 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ int	create_threads(t_philosopher *philosophers, int num_philos)
 	i = 0;
 	while (i < num_philos)
 	{
-		if (pthread_create(&threads[i], NULL, philosopher_life, &philosophers[i]) != 0)
+		if (pthread_create(&threads[i], NULL,
+				philosopher_life, &philosophers[i]) != 0)
 			return (free(threads), 1);
 		precise_usleep(100);
 		i++;
@@ -56,14 +57,14 @@ void	cleanup_resources(pthread_mutex_t *forks, t_philosopher *philosophers,
 	free(philosophers);
 }
 
-void init_config_struct(t_init_config *config, 	pthread_mutex_t *forks,
+void	init_config_struct(t_init_config *config, pthread_mutex_t *forks,
 	int num_philos,	char **argv)
 {
 	*config = (t_init_config){
-	.forks = forks,
-	.num_philos = num_philos,
-	.argv = argv,
-	.printf_mutex = NULL
+		.forks = forks,
+		.num_philos = num_philos,
+		.argv = argv,
+		.printf_mutex = NULL
 	};
 }
 
@@ -92,8 +93,7 @@ int	main(int argc, char **argv)
 		return (handle_init_error(&printf_mutex, forks));
 	if (create_threads(philosophers, num_philos))
 		return (handle_thread_error(&printf_mutex, forks,
-			philosophers, num_philos));
+				philosophers, num_philos));
 	cleanup_resources(forks, philosophers, num_philos, &printf_mutex);
 	return (0);
 }
-

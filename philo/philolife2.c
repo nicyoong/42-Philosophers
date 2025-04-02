@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 00:04:59 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/03 00:06:10 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/03 00:57:29 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	*philosopher_life(void *arg)
 
 	philo = (t_philosopher *)arg;
 	if (philo->id % 2 == 0)
-        precise_usleep(100);
+		precise_usleep(100);
 	while (1)
 	{
 		think(philo);

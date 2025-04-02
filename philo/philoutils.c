@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 23:47:20 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/03 00:11:54 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/03 00:55:18 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	ft_atoi(const char *str)
 	return (result * sign);
 }
 
-unsigned long	get_current_time()
+unsigned long	get_current_time(void)
 {
 	struct timeval	tv;
 
@@ -47,7 +47,7 @@ unsigned long	get_current_time()
 
 void	precise_usleep(unsigned long usec)
 {
-	unsigned long start;
+	unsigned long	start;
 
 	start = get_current_time();
 	while (get_current_time() - start < usec)
@@ -63,4 +63,3 @@ void	print_message(t_philosopher *philo, const char *msg)
 	printf("%lu %d %s\n", time, philo->id, msg);
 	pthread_mutex_unlock(philo->printf_mutex);
 }
-

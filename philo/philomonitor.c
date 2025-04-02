@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 00:10:11 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/03 00:14:40 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/03 00:58:25 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	handle_philosopher_death(t_philosopher *philo)
 	exit(EXIT_SUCCESS);
 }
 
-bool check_philosopher_status(t_philosopher *philo)
+bool	check_philosopher_status(t_philosopher *philo)
 {
 	bool			starving;
 	unsigned long	time_since_meal;
@@ -42,9 +42,11 @@ bool	check_meal_completion(t_philosopher *philos,
 	int	i;
 
 	i = -1;
-	while (++i < num_philos) {
+	while (++i < num_philos)
+	{
 		pthread_mutex_lock(&philos[i].meal_mutex);
-		if (philos[i].meal_count < required) {
+		if (philos[i].meal_count < required)
+		{
 			pthread_mutex_unlock(&philos[i].meal_mutex);
 			return (false);
 		}
@@ -53,7 +55,7 @@ bool	check_meal_completion(t_philosopher *philos,
 	return (true);
 }
 
-void		*monitor(void *arg)
+void	*monitor(void *arg)
 {
 	t_philosopher	*philos;
 	int				num_philos;

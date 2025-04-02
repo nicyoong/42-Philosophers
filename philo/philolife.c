@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 00:01:55 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/03 00:04:34 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/03 00:58:41 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	think(t_philosopher *philo)
 	print_message(philo, "is thinking");
 }
 
-void    take_forks(t_philosopher *philo)
+void	take_forks(t_philosopher *philo)
 {
 	if (philo->id % 2 == 0)
 	{
