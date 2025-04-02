@@ -48,7 +48,6 @@ typedef struct s_init_config
 	int				num_philos;
 	char			**argv;
 	pthread_mutex_t	*printf_mutex;
-	unsigned long	start_time;
 }	t_init_config;
 
 int				ft_atoi(const char *str);

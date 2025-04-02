@@ -333,15 +333,11 @@ int handle_thread_error(pthread_mutex_t *printf_mutex,
 void init_config_struct(t_init_config *config, 	pthread_mutex_t *forks,
 	int num_philos,	char **argv)
 {
-	unsigned long	start_time;
-
-	start_time = get_current_time();
 	*config = (t_init_config){
 	.forks = forks,
 	.num_philos = num_philos,
 	.argv = argv,
-	.printf_mutex = NULL,
-	.start_time = start_time;
+	.printf_mutex = NULL
 	};
 }
 
