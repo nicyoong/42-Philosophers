@@ -62,8 +62,7 @@ void			update_meal_count(t_philosopher *philo);
 void			philo_sleep(t_philosopher *philo);
 void			*philosopher_life(void *arg);
 void			handle_philosopher_death(t_philosopher *philo);
-bool			check_philosopher_status(t_philosopher *philo,
-				unsigned long current_time);
+bool			check_philosopher_status(t_philosopher *philo);
 bool			check_meal_completion(t_philosopher *philos,
 				int num_philos, int required);
 void			*monitor(void *arg);

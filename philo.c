@@ -55,8 +55,11 @@ void precise_usleep(unsigned long usec) {
 
 void	print_message(t_philosopher *philo, const char *msg)
 {
+	unsigned long	time;
+
+	time = get_current_time() / 1000;
 	pthread_mutex_lock(philo->printf_mutex);
-	printf("%lu %d %s\n", get_current_time() / 1000, philo->id, msg);
+	printf("%lu %d %s\n", time, philo->id, msg);
 	pthread_mutex_unlock(philo->printf_mutex);
 }
 
@@ -146,11 +149,13 @@ void	handle_philosopher_death(t_philosopher *philo)
 	exit(EXIT_SUCCESS);
 }
 
-bool check_philosopher_status(t_philosopher *philo, unsigned long current_time)
+bool check_philosopher_status(t_philosopher *philo)
 {
 	bool			starving;
 	unsigned long	time_since_meal;
+	unsigned long	current_time;
 
+	current_time = get_current_time();
 	pthread_mutex_lock(&philo->meal_mutex);
 	time_since_meal = current_time - philo->last_meal_time;
 	starving = (time_since_meal > philo->time_to_die);
@@ -180,7 +185,6 @@ void		*monitor(void *arg)
 	t_philosopher	*philos;
 	int				num_philos;
 	int				req_meals;
-	unsigned long	current_time;
 	int				i;
 
 	philos = (t_philosopher *)arg;
@@ -188,11 +192,10 @@ void		*monitor(void *arg)
 	req_meals = philos[0].required_meals;
 	while (true)
 	{
-		current_time = get_current_time();
 		i = -1;
 		while (++i < num_philos)
 		{
-			if (check_philosopher_status(&philos[i], current_time))
+			if (check_philosopher_status(&philos[i]))
 				handle_philosopher_death(&philos[i]);
 		}
 		if (req_meals != -1
