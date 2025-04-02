@@ -6,28 +6,11 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/03 00:13:03 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/03 00:13:55 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-bool	check_meal_completion(t_philosopher *philos,
-	int num_philos, int required)
-{
-	int	i;
-
-	i = -1;
-	while (++i < num_philos) {
-		pthread_mutex_lock(&philos[i].meal_mutex);
-		if (philos[i].meal_count < required) {
-			pthread_mutex_unlock(&philos[i].meal_mutex);
-			return (false);
-		}
-		pthread_mutex_unlock(&philos[i].meal_mutex);
-	}
-	return (true);
-}
 
 void		*monitor(void *arg)
 {
