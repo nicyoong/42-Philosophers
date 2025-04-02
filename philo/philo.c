@@ -6,18 +6,11 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/03 00:03:09 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/03 00:03:41 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-void	update_last_meal(t_philosopher *philo)
-{
-	pthread_mutex_lock(&philo->meal_mutex);
-	philo->last_meal_time = get_current_time();
-	pthread_mutex_unlock(&philo->meal_mutex);
-}
 
 void	eat(t_philosopher *philo)
 {
