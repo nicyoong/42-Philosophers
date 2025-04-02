@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 00:15:20 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/03 00:16:06 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/03 00:16:25 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,23 @@ int	initialize_forks(pthread_mutex_t **forks, int num_philos)
 		i++;
 	}
 	return (0);
+}
+
+void init_philosopher(t_philosopher *philo,
+	int i, t_init_config *config, int argc)
+{
+	int required_meals = (argc == 6) ? ft_atoi(config->argv[5]) : -1;
+
+	philo->id = i + 1;
+	philo->left_fork = &config->forks[i];
+	philo->right_fork = &config->forks[(i + 1) % config->num_philos];
+	pthread_mutex_init(&philo->meal_mutex, NULL);
+	philo->last_meal_time = get_current_time();
+	philo->meal_count = 0;
+	philo->time_to_die = ft_atoi(config->argv[2]) * 1000;
+	philo->time_to_eat = ft_atoi(config->argv[3]) * 1000;
+	philo->time_to_sleep = ft_atoi(config->argv[4]) * 1000;
+	philo->required_meals = required_meals;
+	philo->printf_mutex = config->printf_mutex;
+	philo->total_philosophers = config->num_philos;
 }
