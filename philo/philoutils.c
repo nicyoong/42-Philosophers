@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 23:47:20 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/02 23:59:55 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/03 00:11:54 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ unsigned long	get_current_time()
 	return (tv.tv_sec * 1000000 + tv.tv_usec);
 }
 
-void	precise_usleep(unsigned long usec) {
+void	precise_usleep(unsigned long usec)
+{
 	unsigned long start;
 
 	start = get_current_time();

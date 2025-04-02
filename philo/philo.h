@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:30:52 by nyoong            #+#    #+#             */
-/*   Updated: 2025/03/31 19:19:22 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/03 00:12:23 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ typedef struct s_init_config
 
 int				ft_atoi(const char *str);
 unsigned long	get_current_time();
+void			precise_usleep(unsigned long usec);
 void			print_message(t_philosopher *philo, const char *msg);
 void			think(t_philosopher *philo);
 void			take_forks(t_philosopher *philo);
