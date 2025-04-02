@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 23:47:20 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/02 23:57:10 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/02 23:59:55 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,5 +51,15 @@ void	precise_usleep(unsigned long usec) {
 	start = get_current_time();
 	while (get_current_time() - start < usec)
 		usleep(20);
+}
+
+void	print_message(t_philosopher *philo, const char *msg)
+{
+	unsigned long	time;
+
+	time = get_current_time() / 1000;
+	pthread_mutex_lock(philo->printf_mutex);
+	printf("%lu %d %s\n", time, philo->id, msg);
+	pthread_mutex_unlock(philo->printf_mutex);
 }
 
