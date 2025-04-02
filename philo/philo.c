@@ -6,17 +6,11 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/03 00:03:41 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/03 00:04:07 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-void	eat(t_philosopher *philo)
-{
-	print_message(philo, "is eating");
-	precise_usleep(philo->time_to_eat);
-}
 
 void	release_forks(t_philosopher *philo)
 {
