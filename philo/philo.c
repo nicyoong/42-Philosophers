@@ -6,30 +6,46 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/03 00:56:55 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/04 17:22:15 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	create_threads(t_philosopher *philosophers, int num_philos)
+int	create_threads(t_philosopher *philosophers, int num_philos,
+	t_init_config *config)
 {
 	int			i;
 	pthread_t	*threads;
 	pthread_t	monitor_thread;
+	int			j;
+	t_monitor_args monitor_args;
 
-	if (pthread_create(&monitor_thread, NULL, monitor, philosophers) != 0)
-		return (1);
-	pthread_detach(monitor_thread);
 	threads = malloc(num_philos * sizeof(pthread_t));
 	if (!threads)
 		return (1);
+    monitor_args.philosophers = philosophers;
+    monitor_args.config = config;
+	if (pthread_create(&monitor_thread, NULL, monitor, &monitor_args) != 0)
+	{
+		free(threads);
+		return (1);
+	}
+	pthread_detach(monitor_thread);
 	i = 0;
 	while (i < num_philos)
 	{
-		if (pthread_create(&threads[i], NULL,
-				philosopher_life, &philosophers[i]) != 0)
-			return (free(threads), 1);
+		if (pthread_create(&threads[i], NULL, philosopher_life, &philosophers[i]) != 0)
+		{
+			j = 0;
+			while (j < i)
+			{
+				pthread_join(threads[j], NULL);
+				j++;
+			}
+			free(threads);
+			return 1;
+		}
 		precise_usleep(100);
 		i++;
 	}
@@ -91,7 +107,7 @@ int	main(int argc, char **argv)
 	set_printf_mutex(&config, &printf_mutex);
 	if (initialize_philosophers(&philosophers, &config, argc))
 		return (handle_init_error(&printf_mutex, forks));
-	if (create_threads(philosophers, num_philos))
+	if (create_threads(philosophers, num_philos, &config))
 		return (handle_thread_error(&printf_mutex, forks,
 				philosophers, num_philos));
 	cleanup_resources(forks, philosophers, num_philos, &printf_mutex);

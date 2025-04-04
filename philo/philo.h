@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:30:52 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/03 00:54:58 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/04 17:21:41 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,12 @@ typedef struct s_init_config
 	pthread_mutex_t	*printf_mutex;
 }	t_init_config;
 
+typedef struct	s_monitor_args
+{
+	t_philosopher	*philosophers;
+	t_init_config	*config;
+}	t_monitor_args;
+
 int				ft_atoi(const char *str);
 unsigned long	get_current_time(void);
 void			precise_usleep(unsigned long usec);
@@ -62,7 +68,8 @@ void			release_forks(t_philosopher *philo);
 void			update_meal_count(t_philosopher *philo);
 void			philo_sleep(t_philosopher *philo);
 void			*philosopher_life(void *arg);
-void			handle_philosopher_death(t_philosopher *philo);
+void			handle_philosopher_death(t_philosopher *philo,
+					t_init_config *config);
 bool			check_philosopher_status(t_philosopher *philo);
 bool			check_meal_completion(t_philosopher *philos,
 					int num_philos, int required);
@@ -73,7 +80,8 @@ void			init_philosopher(t_philosopher *philo,
 					int i, t_init_config *config, int argc);
 int				initialize_philosophers(t_philosopher **philosophers,
 					t_init_config *config, int argc);
-int				create_threads(t_philosopher *philosophers, int num_philos);
+int				create_threads(t_philosopher *philosophers, int num_philos,
+					t_init_config *config);
 void			cleanup_resources(pthread_mutex_t *forks,
 					t_philosopher *philosophers,
 					int num_philos, pthread_mutex_t *printf_mutex);

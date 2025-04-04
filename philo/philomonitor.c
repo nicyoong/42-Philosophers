@@ -6,19 +6,21 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 00:10:11 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/03 00:58:25 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/04 17:22:44 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	handle_philosopher_death(t_philosopher *philo)
+void	handle_philosopher_death(t_philosopher *philo, t_init_config *config)
 {
 	pthread_mutex_lock(&philo->meal_mutex);
 	pthread_mutex_lock(philo->printf_mutex);
 	printf("%lu %d died\n", get_current_time() / 1000, philo->id);
 	pthread_mutex_unlock(philo->printf_mutex);
 	pthread_mutex_unlock(&philo->meal_mutex);
+	cleanup_resources(config->forks, philo, config->num_philos,
+		config->printf_mutex);
 	exit(EXIT_SUCCESS);
 }
 
@@ -57,12 +59,13 @@ bool	check_meal_completion(t_philosopher *philos,
 
 void	*monitor(void *arg)
 {
-	t_philosopher	*philos;
 	int				num_philos;
 	int				req_meals;
 	int				i;
 
-	philos = (t_philosopher *)arg;
+	t_monitor_args *args = (t_monitor_args *)arg;
+	t_philosopher *philos = args->philosophers;
+    t_init_config *config = args->config;
 	num_philos = philos[0].total_philosophers;
 	req_meals = philos[0].required_meals;
 	while (true)
@@ -71,7 +74,7 @@ void	*monitor(void *arg)
 		while (++i < num_philos)
 		{
 			if (check_philosopher_status(&philos[i]))
-				handle_philosopher_death(&philos[i]);
+				handle_philosopher_death(&philos[i], config);
 		}
 		if (req_meals != -1
 			&& check_meal_completion(philos, num_philos, req_meals))
