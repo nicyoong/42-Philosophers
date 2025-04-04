@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 00:10:11 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/04 17:22:44 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/04 17:32:34 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,11 @@ void	*monitor(void *arg)
 		}
 		if (req_meals != -1
 			&& check_meal_completion(philos, num_philos, req_meals))
+		{
+			cleanup_resources(config->forks, philos, config->num_philos,
+				config->printf_mutex);
 			exit(EXIT_SUCCESS);
+		}
 		precise_usleep(100);
 	}
 	return (NULL);
