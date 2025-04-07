@@ -6,13 +6,14 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 00:10:11 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/04 17:32:34 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/07 21:20:56 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	handle_philosopher_death(t_philosopher *philo, t_init_config *config)
+void	handle_philosopher_death(t_philosopher *philo,
+	t_init_config *config, pthread_t *threads)
 {
 	pthread_mutex_lock(&philo->meal_mutex);
 	pthread_mutex_lock(philo->printf_mutex);
@@ -21,6 +22,7 @@ void	handle_philosopher_death(t_philosopher *philo, t_init_config *config)
 	pthread_mutex_unlock(&philo->meal_mutex);
 	cleanup_resources(config->forks, philo, config->num_philos,
 		config->printf_mutex);
+    free(threads);
 	exit(EXIT_SUCCESS);
 }
 
@@ -66,15 +68,16 @@ void	*monitor(void *arg)
 	t_monitor_args *args = (t_monitor_args *)arg;
 	t_philosopher *philos = args->philosophers;
     t_init_config *config = args->config;
+	pthread_t *threads = args->threads;
 	num_philos = philos[0].total_philosophers;
 	req_meals = philos[0].required_meals;
-	while (true)
+	while (1)
 	{
 		i = -1;
 		while (++i < num_philos)
 		{
 			if (check_philosopher_status(&philos[i]))
-				handle_philosopher_death(&philos[i], config);
+				handle_philosopher_death(&philos[i], config, threads);
 		}
 		if (req_meals != -1
 			&& check_meal_completion(philos, num_philos, req_meals))

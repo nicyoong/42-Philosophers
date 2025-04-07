@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 00:01:55 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/03 00:58:41 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/07 20:30:27 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,21 +19,23 @@ void	think(t_philosopher *philo)
 
 void	take_forks(t_philosopher *philo)
 {
-	if (philo->id % 2 == 0)
+	pthread_mutex_t	*first_fork;
+	pthread_mutex_t	*second_fork;
+
+	if (philo->left_fork < philo->right_fork)
 	{
-		pthread_mutex_lock(philo->left_fork);
-		print_message(philo, "has taken a fork");
-		pthread_mutex_lock(philo->right_fork);
-		print_message(philo, "has taken a fork");
+		first_fork = philo->left_fork;
+		second_fork = philo->right_fork;
 	}
 	else
 	{
-		pthread_mutex_lock(philo->right_fork);
-		print_message(philo, "has taken a fork");
-		precise_usleep(100);
-		pthread_mutex_lock(philo->left_fork);
-		print_message(philo, "has taken a fork");
+		first_fork = philo->right_fork;
+		second_fork = philo->left_fork;
 	}
+	pthread_mutex_lock(first_fork);
+	print_message(philo, "has taken a fork");
+	pthread_mutex_lock(second_fork);
+	print_message(philo, "has taken a fork");
 }
 
 void	update_last_meal(t_philosopher *philo)

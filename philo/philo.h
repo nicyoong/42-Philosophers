@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:30:52 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/04 17:21:41 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/07 21:21:06 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ typedef struct	s_monitor_args
 {
 	t_philosopher	*philosophers;
 	t_init_config	*config;
+	pthread_t		*threads;
 }	t_monitor_args;
 
 int				ft_atoi(const char *str);
@@ -69,7 +70,7 @@ void			update_meal_count(t_philosopher *philo);
 void			philo_sleep(t_philosopher *philo);
 void			*philosopher_life(void *arg);
 void			handle_philosopher_death(t_philosopher *philo,
-					t_init_config *config);
+					t_init_config *config, pthread_t *threads);
 bool			check_philosopher_status(t_philosopher *philo);
 bool			check_meal_completion(t_philosopher *philos,
 					int num_philos, int required);

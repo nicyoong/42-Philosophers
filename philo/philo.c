@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/04 17:22:15 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/04/07 20:07:42 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ int	create_threads(t_philosopher *philosophers, int num_philos,
 		return (1);
     monitor_args.philosophers = philosophers;
     monitor_args.config = config;
+	monitor_args.threads = threads;
 	if (pthread_create(&monitor_thread, NULL, monitor, &monitor_args) != 0)
 	{
 		free(threads);
