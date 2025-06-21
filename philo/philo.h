@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:30:52 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/07 21:21:06 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/06/22 00:37:47 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ typedef struct s_init_config
 	pthread_mutex_t	*printf_mutex;
 }	t_init_config;
 
-typedef struct	s_monitor_args
+typedef struct s_monitor_args
 {
 	t_philosopher	*philosophers;
 	t_init_config	*config;

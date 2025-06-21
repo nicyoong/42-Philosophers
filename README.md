@@ -16,6 +16,12 @@ Avoiding starvation
 
 Preventing deadlocks
 
+## Instructions
+
+run makefile
+
+then do ./philo 5 800 200 200
+
 ## Technical Specifications
 
 Mandatory Implementation (Threads/Mutexes)
