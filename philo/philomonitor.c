@@ -6,24 +6,24 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 00:10:11 by nyoong            #+#    #+#             */
-/*   Updated: 2025/06/22 00:49:37 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/06/23 19:21:48 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 void	handle_philosopher_death(t_philosopher *philo,
-	t_init_config *config, pthread_t *threads)
+	t_init_config *config, t_data *data)
 {
+	(void)config;
 	pthread_mutex_lock(&philo->meal_mutex);
 	pthread_mutex_lock(philo->printf_mutex);
 	printf("%lu %d died\n", get_current_time() / 1000, philo->id);
 	pthread_mutex_unlock(philo->printf_mutex);
 	pthread_mutex_unlock(&philo->meal_mutex);
-	cleanup_resources(config->forks, philo, config->num_philos,
-		config->printf_mutex);
-	free(threads);
-	exit(EXIT_SUCCESS);
+	pthread_mutex_lock(&data->stop_mutex);
+	data->simulation_should_end = true;
+	pthread_mutex_unlock(&data->stop_mutex);
 }
 
 bool	check_philosopher_status(t_philosopher *philo)

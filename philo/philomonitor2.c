@@ -6,14 +6,14 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 00:43:16 by nyoong            #+#    #+#             */
-/*   Updated: 2025/06/22 00:49:57 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/06/23 19:20:32 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void	check_and_handle_deaths( t_philosopher *philos, int num_philos,
-	t_init_config *config, pthread_t *threads)
+static bool	check_and_handle_deaths( t_philosopher *philos, int num_philos,
+	t_init_config *config, t_data *data)
 {
 	int	i;
 
@@ -21,9 +21,13 @@ static void	check_and_handle_deaths( t_philosopher *philos, int num_philos,
 	while (i < num_philos)
 	{
 		if (check_philosopher_status(&philos[i]))
-			handle_philosopher_death(&philos[i], config, threads);
+		{
+			handle_philosopher_death(&philos[i], config, data);
+			return (true);
+		}
 		++i;
 	}
+	return (false);
 }
 
 void	check_and_handle_meals(t_philosopher *philos,
@@ -43,17 +47,19 @@ void	*monitor(void *arg)
 	t_monitor_args	*args;
 	t_philosopher	*philos;
 	t_init_config	*config;
-	pthread_t		*threads;
+	t_data			*data;
 	int				req_meals;
 
 	args = (t_monitor_args *)arg;
 	philos = args->philosophers;
 	config = args->config;
-	threads = args->threads;
+	data = args->data;
 	req_meals = philos[0].required_meals;
 	while (1)
 	{
-		check_and_handle_deaths(philos, config->num_philos, config, threads);
+		if (check_and_handle_deaths(philos,
+			config->num_philos, config, data))
+			return (NULL);
 		check_and_handle_meals(philos, config->num_philos, req_meals, config);
 		precise_usleep(100);
 	}
