@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:35:00 by nyoong            #+#    #+#             */
-/*   Updated: 2025/06/23 19:07:31 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/06/23 19:43:23 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,8 @@ void	init_config_struct(t_init_config *config, pthread_mutex_t *forks,
 		.argv = argv,
 		.printf_mutex = NULL
 	};
+	pthread_mutex_init(&config->stop_data.stop_mutex, NULL);
+	config->stop_data.simulation_should_end = false;
 }
 
 void	set_printf_mutex(t_init_config *config,	pthread_mutex_t *printf_mutex)

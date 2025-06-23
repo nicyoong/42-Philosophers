@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 00:43:16 by nyoong            #+#    #+#             */
-/*   Updated: 2025/06/23 19:20:32 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/06/23 19:38:10 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	*monitor(void *arg)
 	while (1)
 	{
 		if (check_and_handle_deaths(philos,
-			config->num_philos, config, data))
+				config->num_philos, config, data))
 			return (NULL);
 		check_and_handle_meals(philos, config->num_philos, req_meals, config);
 		precise_usleep(100);
