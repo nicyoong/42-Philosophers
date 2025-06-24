@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 00:15:20 by nyoong            #+#    #+#             */
-/*   Updated: 2025/04/03 01:00:06 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/06/23 23:58:05 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ void	init_philosopher(t_philosopher *philo,
 	philo->required_meals = required_meals;
 	philo->printf_mutex = config->printf_mutex;
 	philo->total_philosophers = config->num_philos;
+	philo->config = config;
 }
 
 int	initialize_philosophers(t_philosopher **philosophers,

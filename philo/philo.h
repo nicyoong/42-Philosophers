@@ -6,7 +6,7 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 23:30:52 by nyoong            #+#    #+#             */
-/*   Updated: 2025/06/23 19:44:16 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/06/24 00:20:27 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,22 +19,6 @@
 # include <unistd.h>
 # include <pthread.h>
 # include <sys/time.h>
-
-typedef struct s_philosopher
-{
-	int				id;
-	pthread_mutex_t	*left_fork;
-	pthread_mutex_t	*right_fork;
-	pthread_mutex_t	meal_mutex;
-	unsigned long	last_meal_time;
-	int				meal_count;
-	unsigned long	time_to_die;
-	unsigned long	time_to_eat;
-	unsigned long	time_to_sleep;
-	int				required_meals;
-	pthread_mutex_t	*printf_mutex;
-	int				total_philosophers;
-}	t_philosopher;
 
 typedef struct s_data
 {
@@ -50,6 +34,23 @@ typedef struct s_init_config
 	pthread_mutex_t	*printf_mutex;
 	t_data			stop_data;
 }	t_init_config;
+
+typedef struct s_philosopher
+{
+	int				id;
+	pthread_mutex_t	*left_fork;
+	pthread_mutex_t	*right_fork;
+	pthread_mutex_t	meal_mutex;
+	unsigned long	last_meal_time;
+	int				meal_count;
+	unsigned long	time_to_die;
+	unsigned long	time_to_eat;
+	unsigned long	time_to_sleep;
+	int				required_meals;
+	pthread_mutex_t	*printf_mutex;
+	int				total_philosophers;
+	t_init_config	*config;
+}	t_philosopher;
 
 typedef struct s_monitor_args
 {
@@ -70,6 +71,7 @@ void			eat(t_philosopher *philo);
 void			release_forks(t_philosopher *philo);
 void			update_meal_count(t_philosopher *philo);
 void			philo_sleep(t_philosopher *philo);
+bool			should_stop(t_data *data);
 void			*philosopher_life(void *arg);
 void			handle_philosopher_death(t_philosopher *philo,
 					t_init_config *config, t_data *data);

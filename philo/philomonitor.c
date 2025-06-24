@@ -6,11 +6,21 @@
 /*   By: nyoong <nyoong@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 00:10:11 by nyoong            #+#    #+#             */
-/*   Updated: 2025/06/23 19:21:48 by nyoong           ###   ########.fr       */
+/*   Updated: 2025/06/23 23:44:14 by nyoong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+bool	should_stop(t_data *data)
+{
+	bool	stop;
+
+	pthread_mutex_lock(&data->stop_mutex);
+	stop = data->simulation_should_end;
+	pthread_mutex_unlock(&data->stop_mutex);
+	return (stop);
+}
 
 void	handle_philosopher_death(t_philosopher *philo,
 	t_init_config *config, t_data *data)
