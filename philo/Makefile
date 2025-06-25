@@ -5,8 +5,9 @@ SRCS      = philo.c \
             philocore.c \
             philoerror.c \
             philoinit.c \
-            philolife2.c \
             philolife.c \
+            philolife2.c \
+            philolife3.c \
             philomonitor2.c \
             philomonitor.c \
             philoutils.c
